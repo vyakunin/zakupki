@@ -19,6 +19,7 @@ from view import suppliers
 
 application = webapp.WSGIApplication(
     [('/regions.json', regions.ByRegionView),
+     ('region_month', regions.ByMonthiView),
      ('/top_customers', customers.TopCustomerView),
      ('/top_suppliers', suppliers.TopSuppliersView),
     ],
