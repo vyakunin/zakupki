@@ -1,17 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
-
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>By Region</title>
-</head>
-<body>
-  <table>
-    <tr><th>Region</th><th>Amount</th></tr>
-    {% for record in records %}
-      <tr><td>{{record.region}}</td><td>{{record.value}}</td></tr>
-    {% endfor %}
-  </table>
-</body>
-</html>
+{
+    cols: [{id: 'region', label: 'Регион', type: 'string'},
+            {id: 'sum', label: 'Сумма', type: 'number'}],
+    rows: [
+{% if records %}
+  {% for record in records %}
+    {c:[{v:'{{record.region}}', v: "{{record.value}}"}]}
+  {% endfor %}
+{% endif %}
+  ]
+}
