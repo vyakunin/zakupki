@@ -12,10 +12,10 @@ import os
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
-from view import by_region
+from view import regions
 
 application = webapp.WSGIApplication(
-    [('/regions.json', by_region.ByRegionView),
+    [('/regions.json', regions.ByRegionView),
     ],
     debug=True)
 

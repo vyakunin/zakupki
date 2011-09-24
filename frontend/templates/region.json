@@ -1,5 +1,5 @@
 {
-    "cols": [{"id": "region", label: "Регион", "type": "string"},
+    "cols": [{"id": "region", "label": "Регион", "type": "string"},
             {"id": "sum", "label": "Сумма", "type": "number"}],
     "rows": [
   {% for record in records %}
