@@ -17,7 +17,7 @@ from view import regions
 
 application = webapp.WSGIApplication(
     [('/regions.json', regions.ByRegionView),
-     ('/customers', customers.CustomerView),
+     ('/top_customers', customers.TopCustomerView),
     ],
     debug=True)
 

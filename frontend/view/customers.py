@@ -22,7 +22,7 @@ JSON_TEMPLATE_PATH = '../templates/customers.json'
 DATE_FORMAT = '%Y.%m.%d'
 
 
-class CustomerView(webapp.RequestHandler):
+class TopCustomerView(webapp.RequestHandler):
   def GetTemplateValues(self):
     start_date_str = self.request.get('start_date', '2011.01.01')
     end_date_str = self.request.get('end_date', '9999.12.31')
