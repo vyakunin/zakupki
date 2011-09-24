@@ -15,7 +15,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from view import by_region
 
 application = webapp.WSGIApplication(
-    [('/', by_region.ByRegionView),
+    [('/regions.json', by_region.ByRegionView),
     ],
     debug=True)
 
