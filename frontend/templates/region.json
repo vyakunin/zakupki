@@ -1,9 +1,21 @@
 {
-    "cols": [{"id": "region", "label": "Регион", "type": "string"},
-            {"id": "sum", "label": "Сумма", "type": "number"}],
+    "cols": [
+      {% for col in columns %}
+        {"id": "{{col.id}}", "label": "{{col.label}}", "type": "{{col.type}}"}
+        {% if forloop.last  %}
+          ],
+        {% else %}
+          ,
+        {% endif %}
+      {% endfor %}
     "rows": [
   {% for record in records %}
-    {"c":[{"v": "{{record.region}}"}, {"f": "{{record.value}}"}]}
+    {"c":[{"v": "{{record.key}}"}, {"f": "{{record.value}}"}]}
+    {% if forloop.last %}
+      ]
+     {% else %}
+      ,
+    {% endif %}
   {% endfor %}
   ]
 }
