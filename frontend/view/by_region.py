@@ -16,7 +16,7 @@ from google.appengine.ext.webapp import template
 
 import model
 
-TEMPLATE_PATH = '../templates/by_region.html'
+TEMPLATE_PATH = '../templates/region.json'
 
 
 class ByRegionView(webapp.RequestHandler):
@@ -39,6 +39,6 @@ class ByRegionView(webapp.RequestHandler):
                                         key=lambda a:a[1],
                                         reverse=True)]
 
-    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
     path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
     self.response.out.write(template.render(path, {'records': region_values}))
