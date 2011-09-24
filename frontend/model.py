@@ -19,10 +19,10 @@ class Customer(db.Mode):
 
   
 class Supplier(db.Model):
-  participant_type = db.StringProperty(required=True)
+  participant_type = db.StringProperty()
   inn = db.StringProperty(required=True)
   kpp = db.StringProperty(required=True)
-  organization_form = db.StringProperty(required=True)
+  organization_form = db.StringProperty()
   organization_name = db.TextProperty(required=True)
   factual_address = db.StringProperty()
 
