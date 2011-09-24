@@ -13,9 +13,11 @@ import os
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from view import by_region
+from view import customers
 
 application = webapp.WSGIApplication(
     [('/regions.json', by_region.ByRegionView),
+     ('/customers', customers.CustomerView)
     ],
     debug=True)
 
