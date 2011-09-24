@@ -1,7 +1,7 @@
 #!/usr/bin/python2.5
 # encoding: utf-8
 """
-app.py
+data_importer.py
 
 Copyright (c) Sergey Babenko and Vladimir Yakunin 2011.
 All rights reserved.
@@ -68,6 +68,8 @@ class XmlImporter(object):
                   'no' : 'http://zakupki.gov.ru/oos/export/1'}
     for record in tree.xpath('/no:export/no:contract', namespaces=namespaces):
       date = record.xpath('string(./oos:protocolDate)', namespaces=namespaces)
+      if not date:
+        date = record.xpath('string(./oos:signDate)', namespaces=namespaces)
       date = date[:-2] + '01'
       amount = record.xpath('number(./oos:price)', namespaces=namespaces)
       currencyCode = record.xpath('string(./oos:currency/oos:code)', namespaces=namespaces)
@@ -102,20 +104,20 @@ class XmlImporter(object):
 def PrintSpents(spents, filename, aggregate_customer, aggregate_supplier, aggregate_region):
   csvWriter = csv.writer(open(filename, 'wb'), delimiter=',',
                          quotechar='"', quoting=csv.QUOTE_MINIMAL)
-  csvWriter.writerow(['date', 'sum', 'customer', 'contractor', 'region'])
+  csvWriter.writerow(['customer', 'supplier', 'amount', 'date', 'region'])
   aggregatedSpents = {}
   for spent in spents:
     key = [spent[0]]
     if aggregate_customer: #  TODO(vyakunin): palevo
-      key.append('*')
+      key.append('0')
     else:
       key.append(spent[2])
     if aggregate_supplier:
-      key.append('*')
+      key.append('0')
     else:
       key.append(spent[3])
     if aggregate_region:
-      key.append('*')
+      key.append('0')
     else:
       key.append(spent[4])
     key = tuple(key)
@@ -124,8 +126,10 @@ def PrintSpents(spents, filename, aggregate_customer, aggregate_supplier, aggreg
     else:
       aggregatedSpents[key] = spent[1]
   for key, value in aggregatedSpents.iteritems():
-    row = [key[0], value]
-    row.extend(list(key[1:]))
+    row = list(key[1:3]) # customer, supplier
+    row.append(value) # amount
+    row.append(key[0]) # date
+    row.append(key[3]) # region
     csvWriter.writerow(row)
   
 def PrintCustomers(customers, filename):
@@ -135,8 +139,8 @@ def PrintCustomers(customers, filename):
                              delimiter=',',
                              quotechar='"',
                              quoting=csv.QUOTE_MINIMAL)
-  csvWriter.writerow({'regNum':'regNum',
-                      'fullName':'fullName',
+  csvWriter.writerow({'regNum':'reg_num',
+                      'fullName':'full_name',
                       'inn':'inn',
                       'kpp':'kpp',
                       'tofk':'tofk'})
@@ -151,12 +155,12 @@ def PrintSuppliers(suppliers, filename):
                              delimiter=',',
                              quotechar='"',
                              quoting=csv.QUOTE_MINIMAL)
-  csvWriter.writerow({'participantType':'participantType',
+  csvWriter.writerow({'participantType':'participant_type',
                       'inn':'inn',
                       'kpp':'kpp',
-                      'organizationForm':'organizationForm',
-                      'organizationName':'organizationName',
-                      'factualAddress':'factualAddress'})
+                      'organizationForm':'organization_form',
+                      'organizationName':'organization_name',
+                      'factualAddress':'factual_address'})
   for supplier in suppliers:
     csvWriter.writerow(supplier)
   
@@ -187,7 +191,7 @@ def main():
   PrintSpents(parsed['spents'], outputSpents, 
               aggregate_customer=False,
               aggregate_supplier=False,
-              aggregate_region=True)
+              aggregate_region=False)
   PrintCustomers(parsed['customers'], outputCustomers)
   PrintSuppliers(parsed['suppliers'], outputSuppliers)
 
