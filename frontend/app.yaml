@@ -4,6 +4,11 @@ runtime: python
 api_version: 1
 
 handlers:
+
+
+- url: /byperiod
+  static_dir: byperiod
+  
 - url: /.*
   script: app.py
 
