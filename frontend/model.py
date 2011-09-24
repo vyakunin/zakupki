@@ -10,12 +10,17 @@ All rights reserved.
 from google.appengine.api import datastore
 from google.appengine.ext import db
 
-class Customer(db.Mode):
+class Customer(db.Model):
   reg_num = db.StringProperty(required=True)
   full_name = db.TextProperty(required=True)
   inn = db.StringProperty(required=True)
   kpp = db.StringProperty(required=True)
   tofk = db.StringProperty(required=True)
+
+  @classmethod
+  def Aggregated(cls):
+    """Returns special Customer used for aggregation"""
+    return cls.get_by_key_name('0')
 
   
 class Supplier(db.Model):
@@ -25,6 +30,11 @@ class Supplier(db.Model):
   organization_form = db.StringProperty()
   organization_name = db.TextProperty(required=True)
   factual_address = db.StringProperty()
+  
+  @classmethod
+  def Aggregated(cls):
+    """Returns special Supplier used for aggregation"""
+    return cls.get_by_key_name('0')
 
 
 class Expense(db.Model):
