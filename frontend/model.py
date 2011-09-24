@@ -37,4 +37,4 @@ class Expense(db.Model):
   # In what date they do pay
   date = db.DateProperty(required=True)
   # Region of payment
-  region = db.IntegerProperty(required=True)  # 2-digit code
+  region = db.StringProperty(required=True)  # 2-digit code
