@@ -10,7 +10,9 @@ All rights reserved.
 from lxml import etree
 import csv
 import getopt
+import os
 import sys
+import zipfile
 
 class XmlImporter(object):
   """Provides iterator over tuples of strings given xml."""
@@ -25,11 +27,12 @@ class XmlImporter(object):
     inn = customer.xpath('string(oos:inn)', namespaces=namespaces)
     kpp = customer.xpath('string(oos:kpp)', namespaces=namespaces)
     tofk = customer.xpath('string(oos:tofk)', namespaces=namespaces)    
-    return {'regNum':regNum,
-            'fullName':fullName,
-            'inn':inn,
-            'kpp':kpp,
-            'tofk':tofk}
+    customer_object = {'regNum':regNum,
+                       'fullName':fullName,
+                       'inn':inn,
+                       'kpp':kpp,
+                       'tofk':tofk}
+    return customer_object
 
   @staticmethod
   def ParseSupplier(supplier, namespaces):
@@ -88,8 +91,8 @@ class XmlImporter(object):
                      supplier['inn'],
                      customer['inn'][:2]))
     return {'spents': spents,
-            'suppliers': self.suppliers.values(),
-            'customers': self.customers.values()}
+            'suppliers': self.suppliers,
+            'customers': self.customers}
 
   def AddCustomer(self, customer):
     """Adds customer to dictionary if was absent."""
@@ -144,7 +147,7 @@ def PrintCustomers(customers, filename):
                       'inn':'inn',
                       'kpp':'kpp',
                       'tofk':'tofk'})
-  for customer in customers:
+  for customer in customers.values():
     csvWriter.writerow(customer)
   
 def PrintSuppliers(suppliers, filename):
@@ -161,13 +164,14 @@ def PrintSuppliers(suppliers, filename):
                       'organizationForm':'organization_form',
                       'organizationName':'organization_name',
                       'factualAddress':'factual_address'})
-  for supplier in suppliers:
+  for supplier in suppliers.values():
     csvWriter.writerow(supplier)
   
 def main():
   try:
     opts, args = getopt.getopt(sys.argv[1:], '',
-                               ['input=',
+                               ['directory=',
+                                'tmpdir=',
                                 'outputSpents=',
                                 'outputSuppliers=',
                                 'outputCustomers='
@@ -175,11 +179,13 @@ def main():
   except getopt.GetoptError, err:
     #print help information and exit:
     print str(err)#  will print something like "option -a not recognized"
-    print 'usage: arch -i386 /usr/bin/python data_importer.py --input="../../contract.xml" --outputSpents="spents.csv" --outputCustomers="customers.csv" --outputSuppliers="suppliers.csv"'
+    print 'usage: arch -i386 /usr/bin/python data_importer.py --directory="../../Moskovskaja_obl" --tmpdir="../data" --outputSpents="expenses.csv" --outputCustomers="customer.csv" --outputSuppliers="supplier.csv"'
     sys.exit(2)
   for name, value in opts:
-    if name == '--input':
-      inputFile = value
+    if name == '--directory':
+      directory = value
+    if name == '--tmpdir':
+      tmpdir = value
     elif name == '--outputSpents':
       outputSpents = value 
     elif name == '--outputSuppliers':
@@ -187,13 +193,36 @@ def main():
     elif name == '--outputCustomers':
       outputCustomers = value
   importer = XmlImporter()
-  parsed = importer.ParseData(open(inputFile, "r"))
-  PrintSpents(parsed['spents'], outputSpents, 
+  spents = []
+  customers = {}
+  suppliers = {}
+  for dirname, dirnames, filenames in os.walk(directory):
+    for filename in filenames:
+      if filename.startswith('contract'):
+        filename = os.path.join(dirname, filename)
+        assert zipfile.is_zipfile(filename)
+        myZip = zipfile.ZipFile(filename, "r")
+        for name in myZip.namelist():
+          myZip.extract(name, tmpdir)
+          inputFile = os.path.join(tmpdir, name)
+          print inputFile
+          parsed = importer.ParseData(open(inputFile, "r"))
+          spents.extend(parsed['spents'])
+          
+          for key, value in parsed['customers'].iteritems():
+            if not key in customers:
+              customers[key] = value
+          for key, value in parsed['suppliers'].iteritems():
+            if not key in suppliers:
+              suppliers[key] = value
+          os.rm(inputFile)
+            
+  PrintSpents(spents, outputSpents, 
               aggregate_customer=False,
               aggregate_supplier=False,
-              aggregate_region=False)
-  PrintCustomers(parsed['customers'], outputCustomers)
-  PrintSuppliers(parsed['suppliers'], outputSuppliers)
+              aggregate_region=True)
+  PrintCustomers(customers, outputCustomers)
+  PrintSuppliers(suppliers, outputSuppliers)
 
 if __name__ == "__main__":
   main()
