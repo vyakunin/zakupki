@@ -16,7 +16,7 @@ from view import regions
 
 application = webapp.WSGIApplication(
     [('/regions.json', regions.ByRegionView),
-    ],
+     ('/region_month.json', regions.ByMonthView)],
     debug=True)
 
 

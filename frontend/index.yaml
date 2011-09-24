@@ -15,3 +15,13 @@ indexes:
   - name: customer
   - name: supplier
   - name: date
+
+- kind: Expense
+  properties:
+  - name: region
+  - name: date
+
+- kind: Expense
+  ancestor: yes
+  properties:
+  - name: date
