@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>goszakupki - byperiod</title>
+
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+
+  // ------------ jquery start  --------------- //
+  google.load("jquery", "1.6.4");
+   
+  function get_json() {
+    return $.ajax({
+      url: '/regions.json',
+      dataType: 'json', 
+      async:false,
+    }).responseText;
+  } 
+  // ------------ jquery start  --------------- // 
+   
+       
+  google.load('visualization', '1', {packages:['table']});
+  google.setOnLoadCallback(drawTable);
+  function drawTable() {  
+    
+    var JSONObject = get_json();  
+    var data = new google.visualization.DataTable(JSONObject);
+    var table = new google.visualization.Table(document.getElementById('table_div'));
+    table.draw(data, {showRowNumber: true});
+    
+  }
+  
+</script>
+
+
+</head>
+
+<body>
+
+<!-- general content -->
+<div class="main_wrapper">
+
+
+    
+    <!-- logo and navy -->
+	<div class="header_wrapper">
+         header_wrapper      
+    	<div class="cb"></div>
+    </div>
+    <!-- / logo and navy -->
+    
+
+    <!-- form -->
+	<div class="form_wrapper">
+        
+        <form>
+            <div class="form_fields_wrapper">
+                <div class="left">
+                    Период с <input type="text" name="period_from" value="" />
+                </div>
+                <div class="right">
+                    Период по <input type="text" name="period_to" value="" />
+                </div>
+                <div class="search_but">
+                    <input type="submit" name="search_byperiod" value="Поиск" />
+                </div>
+             </div>   
+        </form>
+           
+    	<div class="cb"></div>
+    </div>
+    <!-- / form -->
+
+     <!-- data -->
+	<div class="data_wrapper">
+
+        
+        <div id="table_div"></div>
+        
+
+     
+    	<div class="cb"></div>
+    </div>
+    <!-- / data -->
+
+    
+    
+    <!-- footer -->
+    <div class="footer_wrapper">
+    	<div class="copyright_1">2011 Госзакупки</div>
+    	<div class="cb"></div>
+    </div>
+    <!-- / footer -->
+    
+	<div class="cb"></div>
+</div>
+<!-- / general content -->
+
+
+</body>
+</html>

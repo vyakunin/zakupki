@@ -1,0 +1,9 @@
+{
+    "cols": [{"id": "region", label: "Регион", "type": "string"},
+            {"id": "sum", "label": "Сумма", "type": "number"}],
+    "rows": [
+  {% for record in records %}
+    {"c":[{"v": "{{record.region}}"}, {"f": "{{record.value}}"}]}
+  {% endfor %}
+  ]
+}
