@@ -1,10 +1,10 @@
 {
-    cols: [{id: 'region', label: 'Регион', type: 'string'},
-            {id: 'sum', label: 'Сумма', type: 'number'}],
-    rows: [
+    "cols": [{"id": "region", label: "Регион", "type": "string"},
+            {"id": "sum", "label": "Сумма", "type": "number"}],
+    "rows": [
 {% if records %}
   {% for record in records %}
-    {c:[{v:'{{record.region}}', v: "{{record.value}}"}]}
+    {"c":[{"v":"{{record.region}}", "v": "{{record.value}}"}]}
   {% endfor %}
 {% endif %}
   ]
