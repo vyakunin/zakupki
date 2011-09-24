@@ -20,7 +20,12 @@ class Customer(db.Model):
   @classmethod
   def Aggregated(cls):
     """Returns special Customer used for aggregation"""
-    return cls.get_by_key_name('0')
+    return cls.get_or_insert('0',
+                             reg_num='0',
+                             full_name='Aggregated',
+                             inn='0',
+                             kpp='0',
+                             tofk='0')
 
   
 class Supplier(db.Model):
@@ -34,8 +39,10 @@ class Supplier(db.Model):
   @classmethod
   def Aggregated(cls):
     """Returns special Supplier used for aggregation"""
-    return cls.get_by_key_name('0')
-
+    return cls.get_or_insert('0',
+                             inn='0',
+                             kpp='0',
+                             organization_name='Aggregated')
 
 class Expense(db.Model):
   # Who pays
