@@ -19,7 +19,7 @@ from google.appengine.ext.webapp import template
 import model
 
 
-TEMPLATE_PATH = '../templates/region.json'
+TEMPLATE_PATH = '../templates/region_table.json'
 # date format for requests
 DATE_FORMAT = '%Y.%m.%d'
 
@@ -51,7 +51,7 @@ class RegionView(webapp.RequestHandler):
       return
     
     self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
-    path = os.path.join(os.path.dirname(__file__), '../templates/region_view.html')
+    path = os.path.join(os.path.dirname(__file__), '../templates/region.html')
     self.response.out.write(template.render(path, 
                                             self.GetTemplateValues()))
     
