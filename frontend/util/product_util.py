@@ -17,7 +17,7 @@ class ProductCategory(object):
 
   @staticmethod
   def ByCode(code):
-    return ProductCategory.CATEGORY_BY_CODE[code[:2]]
+    return ProductCategory.CATEGORY_BY_CODE.get(code[:2], 'Другое')
 
 ProductCategory.CATEGORIES = [
   ProductCategory('01', 'Сельское хозяйство,  охота и связанная с этим деятельность по предоставлению услуг'),
