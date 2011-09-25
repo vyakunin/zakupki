@@ -39,7 +39,7 @@ class Supplier(db.Model):
   inn = db.StringProperty(required=True)
   kpp = db.StringProperty()
   organization_form = db.StringProperty()
-  organization_name = db.TextProperty(required=True)
+  organization_name = db.TextProperty()
   factual_address = db.TextProperty()
   
   @classmethod
