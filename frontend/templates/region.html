@@ -29,8 +29,15 @@
     {
       var evalledData = eval("(" + get_json('/top_customers?region={{region_code}}&view=json') + ")");
       var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+      
       var table = new google.visualization.Table(document.getElementById('customers_table'));
       table.draw(data, {showRowNumber: true});
+      // 
+      // 
+      // table.draw(data, {allowHtml: true, showRowNumber: true});
     }
 
     {

@@ -30,24 +30,41 @@
     {
       var evalledData = eval("(" + get_json('/regions.json') + ")");
       var data = new google.visualization.DataTable(evalledData);
+
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+
       var table = new google.visualization.Table(document.getElementById('top_regions'));
       table.draw(data, {showRowNumber: true, allowHtml: true});
     }
     {
       var evalledData = eval("(" + get_json('/top_customers?view=json') + ")");
       var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+
+      formatter.format(data, 1); // Apply formatter to second column
       var table = new google.visualization.Table(document.getElementById('top_customers'));
       table.draw(data, {showRowNumber: true});
     }
     {
       var evalledData = eval("(" + get_json('/top_suppliers?view=json') + ")");
       var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+
       var table = new google.visualization.Table(document.getElementById('top_suppliers'));
       table.draw(data, {showRowNumber: true});
     }
     {
       var evalledData = eval("(" + get_json('/region_pie_chart.json') + ")");
       var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+
+      formatter.format(data, 1); // Apply formatter to second column
       var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
       chart.draw(data, {width: 450, height: 300, title: 'Закупки'});
     }
