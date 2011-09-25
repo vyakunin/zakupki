@@ -71,7 +71,6 @@ class ByRegionView(webapp.RequestHandler):
        .filter('customer = ', model.Customer.Aggregated())
        .filter('type = ', model.AGGREGATE_TYPE))
     if date_from and date_to:
-      logging.error("WTF!")
       query = (query.filter('date > ', date_from)
           .filter('date < ', date_to))
     else:
@@ -79,7 +78,6 @@ class ByRegionView(webapp.RequestHandler):
 
     values_dict = collections.defaultdict(lambda: 0.0)
     for record in query.fetch(10000):
-      logging.info('%s, %s, %f', record.date, record.type, record.amount)
       if record.region != model.AGGREGATE_REGION:
         values_dict[record.region] += record.amount
     
@@ -131,8 +129,6 @@ class ByMonthView(webapp.RequestHandler):
     for record in query:
       if record.date >= model.AGGREGATE_DATE.date():
         continue
-
-      logging.info(record.date)
 
       if not last_date:
         last_date = record.date
