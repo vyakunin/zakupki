@@ -67,17 +67,18 @@ class ByRegionView(webapp.RequestHandler):
     date_from, date_to = get_dates(self.request) 
 
     query = (model.Expense.all()
-        .filter('supplier = ', model.Supplier.Aggregated())
-        .filter('customer = ', model.Customer.Aggregated())
+#        .filter('supplier = ', model.Supplier.Aggregated())
+#        .filter('customer = ', model.Customer.Aggregated())
         .filter('type = ', model.AGGREGATE_TYPE))
     if date_from and date_to:
+      logging.error("WTF!")
       query = (query.filter('date > ', date_from)
           .filter('date < ', date_to))
     else:
       query = query.filter('date = ', model.AGGREGATE_DATE)
 
     values_dict = collections.defaultdict(lambda: 0.0)
-    for record in query:
+    for record in query.fetch(10000):
       logging.info('%s, %s, %f', record.date, record.type, record.amount)
       if record.region != model.AGGREGATE_REGION:
         values_dict[record.region] += record.amount
