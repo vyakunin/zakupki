@@ -82,14 +82,10 @@ class ByRegionView(webapp.RequestHandler):
                      for r, v in sorted(values_dict.items(),
                                         key=lambda a:a[1],
                                         reverse=True)]
-    columns = [{'id': 'region', 'label': 'Регион', 'type': 'string'},
-               {'id': 'sum', 'label': 'Сумма', 'type': 'number'}]
-
     self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
     path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
-    self.response.out.write(template.render(path, {
-                                                   'records': region_values,
-                                                   'columns': columns}))
+    self.response.out.write(template.render(path,
+                                            {'records': region_values}))
 
 # class ByMonthView(webapp.RequestHandler):
 #   """Gets month - sum data per region
