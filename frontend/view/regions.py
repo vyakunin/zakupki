@@ -76,7 +76,8 @@ class ByRegionView(webapp.RequestHandler):
 
     values_dict = collections.defaultdict(lambda: 0.0)
     for record in query:
-      values_dict[record.region] += record.amount
+      if record.region != model.AGGREGATE_REGION:
+        values_dict[record.region] += record.amount
     
     region_values = [{'key': r, 'value': v}
                      for r, v in sorted(values_dict.items(),

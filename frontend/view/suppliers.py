@@ -76,6 +76,7 @@ class TopSuppliersView(webapp.RequestHandler):
     """
     view_type = self.request.get('view', 'html')
     template_values = self.GetTemplateValues()
+    logging.info(template_values)
 
     if view_type == 'html':
       self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
