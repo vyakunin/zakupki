@@ -40,7 +40,7 @@ class Supplier(db.Model):
   kpp = db.StringProperty()
   organization_form = db.StringProperty()
   organization_name = db.TextProperty(required=True)
-  factual_address = db.StringProperty()
+  factual_address = db.TextProperty()
   
   @classmethod
   def Aggregated(cls):
