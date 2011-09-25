@@ -7,8 +7,12 @@ Copyright (c) Sergey Babenko and Vladimir Yakunin 2011.
 All rights reserved.
 """
 
+import datetime
+
 from google.appengine.api import datastore
 from google.appengine.ext import db
+
+AGGREGATE_DATE = datetime.datetime(9999, 12, 31)
 
 class Customer(db.Model):
   reg_num = db.StringProperty(required=True)
