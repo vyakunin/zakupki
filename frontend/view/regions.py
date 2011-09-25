@@ -67,9 +67,9 @@ class ByRegionView(webapp.RequestHandler):
     date_from, date_to = get_dates(self.request) 
 
     query = (model.Expense.all()
-#        .filter('supplier = ', model.Supplier.Aggregated())
-        .filter('customer = ', model.Customer.Aggregated())
-        .filter('type = ', model.AGGREGATE_TYPE))
+       .filter('supplier = ', model.Supplier.Aggregated())
+       .filter('customer = ', model.Customer.Aggregated())
+       .filter('type = ', model.AGGREGATE_TYPE))
     if date_from and date_to:
       logging.error("WTF!")
       query = (query.filter('date > ', date_from)
