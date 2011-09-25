@@ -41,6 +41,13 @@
           //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
       });
     }
+    
+    {
+      var evalledData = eval("(" + get_json('/region_pie_chart.json?code={{region_code}}') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var chart = new google.visualization.PieChart(document.getElementById('types_pie_chart'));
+      chart.draw(data, {width: 450, height: 300, title: 'Закупки'});
+    }
   }
   
 </script>
@@ -149,6 +156,8 @@
                 </div> 
                
                 <div id="months_bar_chart"></div>
+                <div id="types_pie_chart"></div>
+                
                 
            	    <div class="cb"></div>
             </div>
