@@ -53,10 +53,13 @@ class ByRegionView(webapp.RequestHandler):
     date_from, date_to = get_dates(self.request) 
 
     query = (model.Expense.all()
-      .filter('supplier = ', model.Supplier.Aggregated())
-      .filter('customer = ', model.Customer.Aggregated())
-      .filter('date > ', date_from)
-      .filter('date < ', date_to))
+        .filter('supplier = ', model.Supplier.Aggregated())
+        .filter('customer = ', model.Customer.Aggregated()))
+    if date_from and date_to:
+      query = (query.filter('date > ', date_from)
+          .filter('date < ', date_to))
+    else:
+      query = query.filter('date = ', model.AGGREGATE_DATE)
 
     values_dict = collections.defaultdict(lambda: 0.0)
     for record in query:
@@ -77,11 +80,14 @@ class ByRegionView(webapp.RequestHandler):
 
 def get_dates(request):
  return map(parse_date, 
-              (request.get('date_from', '2011.01.01'),
-               request.get('date_to', '9999.01.01')))
+              (request.get('date_from'),
+               request.get('date_to')))
 
 def parse_date(date):
-  return datetime.strptime(date, DATE_FORMAT)
+  if date:
+    return datetime.strptime(date, DATE_FORMAT)
+  else:
+    return None
 
 class ByMonthView(webapp.RequestHandler):
   """Gets month - sum data per region

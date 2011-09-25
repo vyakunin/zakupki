@@ -13,41 +13,13 @@ indexes:
 - kind: Expense
   properties:
   - name: customer
-
-- kind: Expense
-  properties:
-  - name: customer
   - name: date
+  - name: amount
+    direction: desc
 
 - kind: Expense
   properties:
-  - name: customer
-  - name: region
   - name: date
-
-- kind: Expense
-  properties:
-  - name: customer
   - name: supplier
-  - name: date
-
-- kind: Expense
-  properties:
-  - name: region
-  - name: date
-
-- kind: Expense
-  properties:
-  - name: region
-  - name: supplier
-  - name: date
-
-- kind: Expense
-  properties:
-  - name: supplier
-  - name: date
-
-- kind: Expense
-  ancestor: yes
-  properties:
-  - name: date
+  - name: amount
+    direction: desc

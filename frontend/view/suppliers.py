@@ -25,18 +25,25 @@ DATE_FORMAT = '%Y.%m.%d'
 
 class TopSuppliersView(webapp.RequestHandler):
   def GetTemplateValues(self):
-    start_date_str = self.request.get('start_date', '2011.01.01')
-    end_date_str = self.request.get('end_date', '9999.12.31')
-    
-    start_date = datetime.datetime.strptime(start_date_str, DATE_FORMAT)
-    end_date = datetime.datetime.strptime(end_date_str, DATE_FORMAT)
+    start_date_str = self.request.get('start_date')
+    end_date_str = self.request.get('end_date')
 
     query = (model.Expense.all()
-        .filter('date >=', start_date)
-        .filter('date <=', end_date)
         .filter('customer = ', model.Customer.Aggregated()))
+    
+    if start_date_str and end_date_str:
+      start_date = datetime.datetime.strptime(start_date_str, DATE_FORMAT)
+      end_date = datetime.datetime.strptime(end_date_str, DATE_FORMAT)
+      query = (query
+          .filter('date >=', start_date)
+          .filter('date <=', end_date))
+    else:
+      query = query.filter('date = ', model.AGGREGATE_DATE)
+
     if self.request.get('region'):
       query = query.filter('region = ', self.request.get('region'))
+    query = query.order('-amount')
+    query = query.fetch(int(self.request.get('limit', '20')))
 
     supplier_data = collections.defaultdict(lambda: 0.0)
     for expense in query:
