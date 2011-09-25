@@ -1,0 +1,9 @@
+{
+ "cols": [{"id": "category", "label": "Категория", "type": "string"},
+          {"id": "sum", "label": "Сумма", "type": "number"}],
+ "rows": [
+  {% for record in records %}
+    {"c":[{"v": "{{record.category.name}}"}, {"v": {{record.value}} }]},
+  {%endfor%}
+  ]
+}

@@ -23,6 +23,7 @@
    
        
   google.load('visualization', '1', {packages:['table']});
+  google.load('visualization', '1', {packages:['corechart']});
   google.setOnLoadCallback(drawTable);
   function drawTable() {  
     
@@ -43,6 +44,12 @@
       var data = new google.visualization.DataTable(evalledData);
       var table = new google.visualization.Table(document.getElementById('top_suppliers'));
       table.draw(data, {showRowNumber: true});
+    }
+    {
+      var evalledData = eval("(" + get_json('/region_pie_chart.json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
+      chart.draw(data, {width: 450, height: 300, title: 'Закупки'});
     }
     
   }
@@ -158,6 +165,12 @@
                     <h2>Топ продавцов</h2>
                     <div class="cb"></div>
                     <div id="top_suppliers"></div>
+                    <div class="cb"></div>    
+                </div> 
+                <div class="table_wrapper">        
+                    <h2>Закупки по категориям</h2>
+                    <div class="cb"></div>
+                    <div id="categories_chart"></div>
                     <div class="cb"></div>    
                 </div> 
                 

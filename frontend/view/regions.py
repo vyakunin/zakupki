@@ -15,6 +15,7 @@ import os
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+from util import product_util
 from util import region_util
 import model
 
@@ -116,11 +117,11 @@ class ByMonthView(webapp.RequestHandler):
       return
     
     query = (model.Expense.all()
-      .filter('region = ', region)
-      .filter('supplier =  ', model.Supplier.Aggregated())
-      .filter('customer = ', model.Customer.Aggregated())
-      .filter('type = ', model.AGGREGATE_TYPE)
-      .order('date'))
+        .filter('region = ', region)
+        .filter('supplier =  ', model.Supplier.Aggregated())
+        .filter('customer = ', model.Customer.Aggregated())
+        .filter('type = ', model.AGGREGATE_TYPE)
+        .order('date'))
 
     values_dict = collections.defaultdict(lambda: 0.0)
     template_records = []
