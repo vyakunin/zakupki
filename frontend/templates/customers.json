@@ -3,7 +3,7 @@
             {"id": "sum", "label": "Сумма", "type": "number"}],
     "rows": [
   {% for record in records %}
-    {"c":[{"v": "{{record.customer.full_name}}"}, {"f": "{{record.value}}"}]}
+    {"c":[{"v": "{{record.customer.full_name}}"}, {"f": "{{record.value}}"}]},
   {% endfor %}
   ]
 }
