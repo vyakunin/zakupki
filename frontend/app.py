@@ -12,13 +12,15 @@ import os
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from view import homepage
 from view import customers
 from view import regions
 from view import suppliers
 
 
 application = webapp.WSGIApplication(
-    [('/regions.json', regions.ByRegionView),
+    [('/', homepage.HomePageView),
+     ('/regions.json', regions.ByRegionView),
      ('/region_month.json', regions.ByMonthView),
      ('/top_customers', customers.TopCustomerView),
      ('/top_suppliers', suppliers.TopSuppliersView),
