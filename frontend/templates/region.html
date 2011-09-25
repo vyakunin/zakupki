@@ -43,6 +43,10 @@
     {
       var evalledData = eval("(" + get_json('/region_bar_chart.json?code={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+
       var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
       chart.draw(data, {width: 800, height: 500, title: 'Закупки'
           //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
@@ -52,6 +56,10 @@
     {
       var evalledData = eval("(" + get_json('/region_pie_chart.json?code={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+
       var chart = new google.visualization.PieChart(document.getElementById('types_pie_chart'));
       chart.draw(data, {width: 800, height: 500, title: 'Закупки'});
     }
