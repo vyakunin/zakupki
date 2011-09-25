@@ -15,7 +15,7 @@ transformers:
     - property: __key__
       external_name: key
       export_transform: transform.key_id_or_name_as_string
-      import_template: "%(customer)s-%(supplier)s-%(region)s-%(date)s"
+      import_template: "%(customer)s-%(supplier)s-%(region)s-%(type)s-%(date)s"
 
     - property: customer
       external_name: customer
