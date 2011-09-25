@@ -5,4 +5,5 @@
   {% for record in records %}
     {"c":[{"v": "<a href='/region?code={{record.key}}'>{{record.name}}</a>"}, {"f": "{{record.value}}"}]}
   {% endfor %}
+    ]
 }
