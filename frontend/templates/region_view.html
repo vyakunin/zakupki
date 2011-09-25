@@ -25,8 +25,9 @@
   google.setOnLoadCallback(drawTable);
   function drawTable() {  
     
-    var JSONObject = get_json();  
-    var data = new google.visualization.DataTable(JSONObject);
+    var JSONObject = get_json();
+    var evalledData = eval("(" + JSONObject + ")");
+    var data = new google.visualization.DataTable(evalledData);
     var table = new google.visualization.Table(document.getElementById('customers_table'));
     table.draw(data, {showRowNumber: true});
   }

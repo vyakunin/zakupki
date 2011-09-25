@@ -27,7 +27,8 @@
   function drawTable() {  
     
     var JSONObject = get_json();  
-    var data = new google.visualization.DataTable(JSONObject);
+    var evalledData = eval("(" + JSONObject + ")");
+    var data = new google.visualization.DataTable(evalledData);
     var table = new google.visualization.Table(document.getElementById('table_div'));
     table.draw(data, {showRowNumber: true});
     
