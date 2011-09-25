@@ -22,7 +22,7 @@ application = webapp.WSGIApplication(
     [('/', homepage.HomePageView),
      ('/region', regions.RegionView),
      ('/regions.json', regions.ByRegionView),
-     # ('/region_month.json', regions.ByMonthView),
+     ('/region_bar_chart.json', regions.ByMonthView),
      ('/top_customers', customers.TopCustomerView),
      ('/top_suppliers', suppliers.TopSuppliersView),
     ],

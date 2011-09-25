@@ -8,10 +8,10 @@ All rights reserved.
 """
 
 import collections
+import datetime
 import logging
 import os
 
-from datetime import datetime
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -45,7 +45,6 @@ class RegionView(webapp.RequestHandler):
   
   def get(self):
     region = self.request.get('code')
-    logging.info(region)
     if not region:
       self.response.set_status(404)
       return
@@ -58,7 +57,7 @@ class RegionView(webapp.RequestHandler):
 
 class ByRegionView(webapp.RequestHandler):
   def get(self):
-    """Implements GET request handler.
+    """Renders JSON data for regions table.
 
     Parameters:
       none:
@@ -87,33 +86,64 @@ class ByRegionView(webapp.RequestHandler):
     self.response.out.write(template.render(path,
                                             {'records': region_values}))
 
-# class ByMonthView(webapp.RequestHandler):
-#   """Gets month - sum data per region
-#   """
-#   def get(self):
-#     date_from, date_to = get_dates(self.request)
-#     region = self.request.get('region_id', '08')
-#     
-#     values_dict = collections.defaultdict(lambda: 0.0)
-#     query = (model.Expense.all()
-#       .filter('region = ', region)
-#       .filter('date > ', date_from)
-#       .filter('date < ', date_to))
-# 
-#     for record in query:
-#       values_dict[record.date] += record.amount
-# 
-#     region_values = [{'key': r, 'value': v}
-#                      for r, v in sorted(values_dict.items(),
-#                                         key=lambda a:a[1],
-#                                         reverse=True)]
-#     columns = [{'id': 'month', 'label': 'Месяц', 'type': 'string'},
-#                {'id': 'sum', 'label': 'Сумма', 'type': 'number'}]
-# 
-#     self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
-#     path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
-#     self.response.out.write(template.render(path, {
-#                                                    'records': region_values,
-#                                                    'columns': columns}))
-# 
-# 
+
+def IsPreviousMonth(test_date, last_date):
+  """Returns true of last_date is the same day of the previous month for test_date"""
+  return (test_date.day == last_date.day and
+          (test_date.month - last_date.month == 1 or
+           test_date.month == 1 and last_date.month == 12))
+
+
+def GetNextMonth(date):
+  """Returns the same day of the next month"""
+  if date.month == 12:
+    return datetime.date(date.year +1, 1, date.day)
+  else:
+    return datetime.date(date.year, date.month +1, date.day)
+
+
+class ByMonthView(webapp.RequestHandler):
+  def get(self):
+    """Renders JSON for bar chart
+    """
+    region = self.request.get('code')
+    if not region:
+      self.response.set_status(404, 'Wrong region code')
+      return
+    
+    query = (model.Expense.all()
+      .filter('region = ', region)
+      .filter('supplier =  ', model.Supplier.Aggregated())
+      .filter('customer = ', model.Customer.Aggregated())
+      .order('date'))
+
+    values_dict = collections.defaultdict(lambda: 0.0)
+    template_records = []
+    last_date = None
+    for record in query:
+      if record.date >= model.AGGREGATE_DATE.date():
+        continue
+
+      logging.info(record.date)
+
+      if not last_date:
+        last_date = record.date
+        value = record.amount
+      else:
+        while not IsPreviousMonth(record.date, last_date):
+          last_date = GetNextMonth(last_date)
+          template_records.append({'month' :last_date.strftime('%b %y'),
+                                   'value': 0.0})
+
+        last_date = record.date
+        value = record.amount
+        
+      template_records.append({'month' :last_date.strftime('%b %y'),
+                               'value': value})
+
+    self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
+    path = os.path.join(os.path.dirname(__file__), '../templates/region_bar_chart.json')
+    self.response.out.write(template.render(path,
+                                            {'records': template_records}))
+
+

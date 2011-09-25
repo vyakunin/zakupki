@@ -19,6 +19,13 @@ indexes:
 
 - kind: Expense
   properties:
+  - name: customer
+  - name: region
+  - name: supplier
+  - name: date
+
+- kind: Expense
+  properties:
   - name: date
   - name: region
   - name: supplier
