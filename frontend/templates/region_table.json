@@ -1,0 +1,13 @@
+{
+    "cols": [{'id': 'region', 'label': 'Регион', 'type': 'string'},
+             {'id': 'sum', 'label': 'Сумма', 'type': 'number'}],
+    "rows": [
+  {% for record in records %}
+    {"c":[{"v": "<a href='/region?code={{record.key}}'>{{record.key}}</a>"}, {"f": "{{record.value}}"}]}
+    {% if forloop.last %}
+      ]
+     {% else %}
+      ,
+    {% endif %}
+  {% endfor %}
+}

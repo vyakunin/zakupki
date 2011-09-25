@@ -1,0 +1,19 @@
+application: ruszakupki
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+
+
+- url: /byperiod
+  static_dir: byperiod
+
+- url: /css
+  static_dir: css
+  
+- url: /.*
+  script: app.py
+
+builtins:
+- remote_api: on
