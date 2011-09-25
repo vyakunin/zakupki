@@ -78,6 +78,7 @@ class ByRegionView(webapp.RequestHandler):
 
     values_dict = collections.defaultdict(lambda: 0.0)
     for record in query:
+      logging.info('%s, %s, %f', record.date, record.type, record.amount)
       if record.region != model.AGGREGATE_REGION:
         values_dict[record.region] += record.amount
     
