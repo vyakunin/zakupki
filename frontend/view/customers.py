@@ -28,7 +28,8 @@ class TopCustomerView(webapp.RequestHandler):
     end_date_str = self.request.get('end_date')
 
     query = (model.Expense.all()
-        .filter('supplier = ', model.Supplier.Aggregated()))
+        .filter('supplier = ', model.Supplier.Aggregated())
+        .filter('type = ', model.AGGREGATE_TYPE))
     
     if start_date_str and end_date_str:
       start_date = datetime.datetime.strptime(start_date_str, DATE_FORMAT)
@@ -41,6 +42,8 @@ class TopCustomerView(webapp.RequestHandler):
 
     if self.request.get('region'):
       query = query.filter('region = ', self.request.get('region'))
+    else:
+      query = query.filter('region = ', model.AGGREGATE_REGION)      
 
     query = query.order('-amount')    
     query = query.fetch(int(self.request.get('limit', '20')))
@@ -50,11 +53,6 @@ class TopCustomerView(webapp.RequestHandler):
       customer_key = model.Expense.customer.get_value_for_datastore(expense).name()
       if customer_key != model.Customer.Aggregated().key().name():
         customer_data[customer_key] += expense.amount
-
-    logging.info(customer_data.keys())
-    logging.info(model.Customer.get_by_key_name(customer_data.keys()))
-    logging.info([(c.key(), c)
-                  for c in model.Customer.get_by_key_name(customer_data.keys())])
 
     customers_dict = dict((c.key().name(), c)
                           for c in model.Customer.get_by_key_name(customer_data.keys()))
