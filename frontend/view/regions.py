@@ -15,7 +15,7 @@ import os
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-
+from util import region_util
 import model
 
 
@@ -40,8 +40,9 @@ class RegionView(webapp.RequestHandler):
   """Render view for one selected region."""
   
   def GetTemplateValues(self):
-    return {'region_name': "Москва (заглушка)",
-            'region_code': self.request.get('code')}
+    code = self.request.get('code')
+    return {'region_name': region_util.names[code], 
+            'region_code': code}
   
   def get(self):
     region = self.request.get('code')
@@ -77,7 +78,7 @@ class ByRegionView(webapp.RequestHandler):
     for record in query:
       values_dict[record.region] += record.amount
     
-    region_values = [{'key': r, 'value': v}
+    region_values = [{'key': r, 'name': region_util.names[r], 'value': v}
                      for r, v in sorted(values_dict.items(),
                                         key=lambda a:a[1],
                                         reverse=True)]
