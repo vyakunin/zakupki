@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>goszakupki - byperiod</title>
+
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+
+  // ------------ jquery start  --------------- //
+  google.load("jquery", "1.6.4");
+   
+  function get_json(myUrl) {
+    return $.ajax({
+      url: myUrl,
+      dataType: 'json', 
+      async:false,
+    }).responseText;
+  } 
+  // ------------ jquery end  --------------- // 
+       
+  google.load('visualization', '1', {packages:['table']});
+  google.load('visualization', '1', {packages:['corechart']});
+  google.setOnLoadCallback(drawTable);
+  function drawTable() {  
+    
+    {
+      var evalledData = eval("(" + get_json('/top_customers?region={{region_code}}&view=json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var table = new google.visualization.Table(document.getElementById('customers_table'));
+      table.draw(data, {showRowNumber: true});
+    }
+
+    {
+      var evalledData = eval("(" + get_json('/region_bar_chart.json?code={{region_code}}') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
+      chart.draw(data, {width: 800, height: 500, title: 'Закупки'
+          //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
+      });
+    }
+  }
+  
+</script>
+
+
+</head>
+
+<body>
+
+<!-- general content -->
+<div class="main_wrapper">
+
+
+    
+    <!-- logo and navy -->
+	<div class="header_wrapper" style="visibility:hidden;">
+         header_wrapper      
+    	<div class="cb"></div>
+    </div>
+    <!-- / logo and navy -->
+    
+
+  <h1>{{region_name}}</h1>
+     <!-- data -->
+	<div class="data_wrapper">
+
+        <h2>Top закупщики региона</h2>
+        <div id="customers_table"></div>
+        <h2>Закупки региона по месяцам</h2>
+        <div id="months_bar_chart"></div>
+
+     
+    	<div class="cb"></div>
+    </div>
+    <!-- / data -->
+
+    
+    
+    <!-- footer -->
+    <div class="footer_wrapper">
+    	<div class="copyright_1">2011 Госзакупки</div>
+    	<div class="cb"></div>
+    </div>
+    <!-- / footer -->
+    
+	<div class="cb"></div>
+</div>
+<!-- / general content -->
+
+
+</body>
+</html>

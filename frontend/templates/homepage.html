@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>goszakupki - byperiod</title>
+
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+
+  // ------------ jquery start  --------------- //
+  google.load("jquery", "1.6.4");
+   
+  function get_json(myUrl) {
+    return $.ajax({
+      url: myUrl,
+      dataType: 'json', 
+      async:false,
+    }).responseText;
+  } 
+  // ------------ jquery start  --------------- // 
+   
+       
+  google.load('visualization', '1', {packages:['table']});
+  google.setOnLoadCallback(drawTable);
+  function drawTable() {  
+    
+    {
+      var evalledData = eval("(" + get_json('/regions.json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var table = new google.visualization.Table(document.getElementById('top_regions'));
+      table.draw(data, {showRowNumber: true, allowHtml: true});
+    }
+    {
+      var evalledData = eval("(" + get_json('/top_customers?view=json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var table = new google.visualization.Table(document.getElementById('top_customers'));
+      table.draw(data, {showRowNumber: true});
+    }
+    {
+      var evalledData = eval("(" + get_json('/top_suppliers?view=json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var table = new google.visualization.Table(document.getElementById('top_suppliers'));
+      table.draw(data, {showRowNumber: true});
+    }
+    
+  }
+  
+</script>
+
+
+</head>
+
+<body>
+
+<!-- general content -->
+<div class="main_wrapper">
+
+
+    
+    <!-- logo and navy -->
+	<div class="header_wrapper">
+         <h1>Zakupki</h1>
+    	<div class="cb"></div>
+    </div>
+    <!-- / logo and navy -->
+      
+     <!-- data -->
+	<div class="data_wrapper">
+
+        <h2>Топ регионов</h2>
+        <div id="top_regions"></div>
+        <h2>Топ покупателей</h2>
+        <div id="top_customers"></div>
+        <h2>Топ продавцов</h2>
+        <div id="top_suppliers"></div>
+
+    	<div class="cb"></div>
+    </div>
+    <!-- / data -->
+
+    
+    
+    <!-- footer -->
+    <div class="footer_wrapper">
+      <!-- <div class="copyright_1">2011 Госзакупки</div> -->
+    	<div class="cb"></div>
+    </div>
+    <!-- / footer -->
+    
+	<div class="cb"></div>
+</div>
+<!-- / general content -->
+
+
+</body>
+</html>
