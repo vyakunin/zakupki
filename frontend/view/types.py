@@ -38,7 +38,7 @@ class ByTypeView(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), '../templates/region_pie_chart.json')
     self.response.out.write(
         template.render(path, {'records':
-                               [{'category': product_util.ProductCategory.ByCode(record.type),
+                               [{'category': product_util.ProductCategory.ByCode(str(record.type)),
                                  'value': record.amount}
                                 for record in query
                                 if record.type != model.AGGREGATE_TYPE]}))
