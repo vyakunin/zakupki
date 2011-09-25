@@ -18,9 +18,30 @@ from google.appengine.ext.webapp import template
 
 import model
 
+
 TEMPLATE_PATH = '../templates/region.json'
 # date format for requests
 DATE_FORMAT = '%Y.%m.%d'
+
+class RegionView(webapp.RequestHandler):
+  """Render view for one selected region."""
+  
+  def GetTemplateValues(self):
+    return {'region_name': "Москва (заглушка)",
+            'region_code': self.request.get('code')}
+  
+  def get(self):
+    region = self.request.get('code')
+    logging.info(region)
+    if not region:
+      self.response.set_status(404)
+      return
+    
+    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    path = os.path.join(os.path.dirname(__file__), '../templates/region_view.html')
+    self.response.out.write(template.render(path, 
+                                            self.GetTemplateValues()))
+    
 
 class ByRegionView(webapp.RequestHandler):
   def get(self):

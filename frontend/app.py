@@ -20,6 +20,7 @@ from view import suppliers
 
 application = webapp.WSGIApplication(
     [('/', homepage.HomePageView),
+     ('/region', regions.RegionView),
      ('/regions.json', regions.ByRegionView),
      ('/region_month.json', regions.ByMonthView),
      ('/top_customers', customers.TopCustomerView),
