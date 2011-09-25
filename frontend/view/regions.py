@@ -67,7 +67,8 @@ class ByRegionView(webapp.RequestHandler):
 
     query = (model.Expense.all()
         .filter('supplier = ', model.Supplier.Aggregated())
-        .filter('customer = ', model.Customer.Aggregated()))
+        .filter('customer = ', model.Customer.Aggregated())
+        .filter('type = ', model.AGGREGATE_TYPE))
     if date_from and date_to:
       query = (query.filter('date > ', date_from)
           .filter('date < ', date_to))
@@ -76,14 +77,16 @@ class ByRegionView(webapp.RequestHandler):
 
     values_dict = collections.defaultdict(lambda: 0.0)
     for record in query:
-      values_dict[record.region] += record.amount
+      if record.region != model.AGGREGATE_REGION:
+        values_dict[record.region] += record.amount
     
     region_values = [{'key': r, 'name': region_util.names[r], 'value': v}
                      for r, v in sorted(values_dict.items(),
                                         key=lambda a:a[1],
                                         reverse=True)]
-    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
     path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
+    logging.info(region_values)
     self.response.out.write(template.render(path,
                                             {'records': region_values}))
 
@@ -116,6 +119,7 @@ class ByMonthView(webapp.RequestHandler):
       .filter('region = ', region)
       .filter('supplier =  ', model.Supplier.Aggregated())
       .filter('customer = ', model.Customer.Aggregated())
+      .filter('type = ', model.AGGREGATE_TYPE)
       .order('date'))
 
     values_dict = collections.defaultdict(lambda: 0.0)
