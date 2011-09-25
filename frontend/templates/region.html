@@ -46,7 +46,7 @@
       var evalledData = eval("(" + get_json('/region_pie_chart.json?code={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var chart = new google.visualization.PieChart(document.getElementById('types_pie_chart'));
-      chart.draw(data, {width: 450, height: 300, title: 'Закупки'});
+      chart.draw(data, {width: 800, height: 500, title: 'Закупки'});
     }
   }
   
@@ -67,14 +67,15 @@
 
 	
     <!-- logo and navy -->
-	<div class="header_wrapper">
+	<div class="header_wrapper"  style="display:block">
         
         <!-- navy -->
     	<div class="main_navy_wrapper">
         	<ul class="top_navy blue_bg_2">
             	<li class="first"><a href="/">Главная</a></li>
-                <li><a href="#">Top поставщиков</a></li>
-                <li><a href="#">Top потребителей</a></li>
+                <!-- <li><a href="#">Top поставщиков</a></li>
+                <li><a href="#">Top потребителей</a></li> -->
+                
  			</ul>
         </div>
         <!-- / navy -->
@@ -84,7 +85,9 @@
     <!-- / logo and navy -->
     
     <!-- inner title -->
-	<div class="inner_title_wrapper blue_bg_inner"><span>Визуализация госзакупок</span></div>
+	<div class="inner_title_wrapper blue_bg_inner" style="margin-top:5px;">
+	  <span>Визуализация госзакупок</span>
+	</div>
     <!-- / inner title -->
     
     <!-- content -->
