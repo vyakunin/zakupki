@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>goszakupki - byperiod</title>
+<title>Главная</title>
 
 <link href="css/main.css" rel="stylesheet" type="text/css" />
 
@@ -52,39 +52,129 @@
 
 </head>
 
+
+
 <body>
 
 <!-- general content -->
 <div class="main_wrapper">
 
-
-    
+	
     <!-- logo and navy -->
 	<div class="header_wrapper">
-         <h1>Zakupki</h1>
+        
+        <!-- navy -->
+    	<div class="main_navy_wrapper">
+        	<ul class="top_navy blue_bg_2">
+            	<li class="first"><a href="/">Главная</a></li>
+                <li><a href="#">Top поставщиков</a></li>
+                <li><a href="#">Top потребителей</a></li>
+ 			</ul>
+        </div>
+        <!-- / navy -->
+        
     	<div class="cb"></div>
     </div>
     <!-- / logo and navy -->
-      
-     <!-- data -->
-	<div class="data_wrapper">
-
-        <h2>Топ регионов</h2>
-        <div id="top_regions"></div>
-        <h2>Топ покупателей</h2>
-        <div id="top_customers"></div>
-        <h2>Топ продавцов</h2>
-        <div id="top_suppliers"></div>
-
-    	<div class="cb"></div>
+    
+    <!-- inner title -->
+	<div class="inner_title_wrapper blue_bg_inner"><span>Визуализация госзакупок</span></div>
+    <!-- / inner title -->
+    
+    <!-- content -->
+    <div class="content_wrapper">
+    	<div class="content_wide">
+            
+            <!-- form -->
+	       <div class="form_wrapper">
+        
+                <form>
+                    <div class="form_fields_wrapper">
+                       <div class="left">
+                            Период с 
+                            <select id="select_date_from" name="date_from">
+                                <option value="01" selected="selected">Январь</option>
+                                <option value="02">Февраль</option>
+                                <option value="03">Март</option>
+                                <option value="04">Апрель</option>
+                                <option value="05">Май</option>
+                                <option value="06">Июнь</option>
+                                <option value="07">Июль</option>
+                                <option value="08">Август</option>
+                                <option value="09">Сентябрь</option>
+                                <option value="10">Октябрь</option>
+                                <option value="11">Ноябрь</option>
+                                <option value="12">Декабрь</option>
+                            </select>
+                            
+                        </div>
+                        <div class="right">
+                            Период по 
+                            <select id="select_date_to" name="date_to">
+                                <option value="01">Январь</option>
+                                <option value="02">Февраль</option>
+                                <option value="03">Март</option>
+                                <option value="04">Апрель</option>
+                                <option value="05">Май</option>
+                                <option value="06">Июнь</option>
+                                <option value="07">Июль</option>
+                                <option value="08">Август</option>
+                                <option value="09" selected="selected">Сентябрь</option>
+                                <option value="10">Октябрь</option>
+                                <option value="11">Ноябрь</option>
+                                <option value="12">Декабрь</option>
+                            </select>
+                        </div>
+                        
+                        <div class="search_but">
+                            <input type="button" id="search_button" name="search_button" value="Искать" />
+                        </div>
+                     </div>   
+                </form>
+                <div class="cb"></div>
+            </div>
+            <!-- / form -->   
+                    
+                    
+             <!-- data -->
+        	<div class="data_wrapper">
+                
+                <!--div id="visual_container"></div-->
+                <div class="table_wrapper">
+                    <h2>Топ регионов</h2>
+                    <div class="cb"></div>
+                    <div id="top_regions"></div>
+                    <div class="cb"></div>
+                </div> 
+                
+                <div class="table_wrapper">    
+                    <h2>Топ покупателей</h2>
+                    <div class="cb"></div>
+                    <div id="top_customers"></div>
+                    <div class="cb"></div>
+                </div> 
+                
+                <div class="table_wrapper">        
+                    <h2>Топ продавцов</h2>
+                    <div class="cb"></div>
+                    <div id="top_suppliers"></div>
+                    <div class="cb"></div>    
+                </div> 
+                
+                
+           	    <div class="cb"></div>
+            </div>
+            <!-- / data -->
+                    
+            <div class="cb"></div>
+        </div>
+        <div class="cb"></div>
     </div>
-    <!-- / data -->
+    <!-- / content -->
 
-    
-    
     <!-- footer -->
     <div class="footer_wrapper">
-      <!-- <div class="copyright_1">2011 Госзакупки</div> -->
+    	<div class="copyright_1">2011 Визуализация госзакупок</div>
     	<div class="cb"></div>
     </div>
     <!-- / footer -->

@@ -8,6 +8,9 @@ handlers:
 
 - url: /byperiod
   static_dir: byperiod
+
+- url: /css
+  static_dir: css
   
 - url: /.*
   script: app.py
