@@ -10,7 +10,7 @@
       {% endfor %}
     "rows": [
   {% for record in records %}
-    {"c":[{"v": "{{record.key}}"}, {"f": "{{record.value}}"}]}
+    {"c":[{"v": "<a href='/region?code={{record.key}}'>{{record.key}}</a>"}, {"f": "{{record.value}}"}]}
     {% if forloop.last %}
       ]
      {% else %}

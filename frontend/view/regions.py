@@ -23,6 +23,19 @@ TEMPLATE_PATH = '../templates/region.json'
 # date format for requests
 DATE_FORMAT = '%Y.%m.%d'
 
+def get_dates(request):
+ return map(parse_date, 
+              (request.get('date_from'),
+               request.get('date_to')))
+
+
+def parse_date(date):
+  if date:
+    return datetime.strptime(date, DATE_FORMAT)
+  else:
+    return None
+
+
 class RegionView(webapp.RequestHandler):
   """Render view for one selected region."""
   
@@ -78,44 +91,33 @@ class ByRegionView(webapp.RequestHandler):
                                                    'records': region_values,
                                                    'columns': columns}))
 
-def get_dates(request):
- return map(parse_date, 
-              (request.get('date_from'),
-               request.get('date_to')))
-
-def parse_date(date):
-  if date:
-    return datetime.strptime(date, DATE_FORMAT)
-  else:
-    return None
-
-class ByMonthView(webapp.RequestHandler):
-  """Gets month - sum data per region
-  """
-  def get(self):
-    date_from, date_to = get_dates(self.request)
-    region = self.request.get('region_id', '08')
-    
-    values_dict = collections.defaultdict(lambda: 0.0)
-    query = (model.Expense.all()
-      .filter('region = ', region)
-      .filter('date > ', date_from)
-      .filter('date < ', date_to))
-
-    for record in query:
-      values_dict[record.date] += record.amount
-
-    region_values = [{'key': r, 'value': v}
-                     for r, v in sorted(values_dict.items(),
-                                        key=lambda a:a[1],
-                                        reverse=True)]
-    columns = [{'id': 'month', 'label': 'Месяц', 'type': 'string'},
-               {'id': 'sum', 'label': 'Сумма', 'type': 'number'}]
-
-    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
-    path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
-    self.response.out.write(template.render(path, {
-                                                   'records': region_values,
-                                                   'columns': columns}))
-
-
+# class ByMonthView(webapp.RequestHandler):
+#   """Gets month - sum data per region
+#   """
+#   def get(self):
+#     date_from, date_to = get_dates(self.request)
+#     region = self.request.get('region_id', '08')
+#     
+#     values_dict = collections.defaultdict(lambda: 0.0)
+#     query = (model.Expense.all()
+#       .filter('region = ', region)
+#       .filter('date > ', date_from)
+#       .filter('date < ', date_to))
+# 
+#     for record in query:
+#       values_dict[record.date] += record.amount
+# 
+#     region_values = [{'key': r, 'value': v}
+#                      for r, v in sorted(values_dict.items(),
+#                                         key=lambda a:a[1],
+#                                         reverse=True)]
+#     columns = [{'id': 'month', 'label': 'Месяц', 'type': 'string'},
+#                {'id': 'sum', 'label': 'Сумма', 'type': 'number'}]
+# 
+#     self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+#     path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
+#     self.response.out.write(template.render(path, {
+#                                                    'records': region_values,
+#                                                    'columns': columns}))
+# 
+# 

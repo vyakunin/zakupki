@@ -30,7 +30,7 @@
       var evalledData = eval("(" + get_json('/regions.json') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var table = new google.visualization.Table(document.getElementById('top_regions'));
-      table.draw(data, {showRowNumber: true});
+      table.draw(data, {showRowNumber: true, allowHtml: true});
     }
     {
       var evalledData = eval("(" + get_json('/top_customers?view=json') + ")");
