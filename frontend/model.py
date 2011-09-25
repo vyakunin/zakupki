@@ -14,8 +14,8 @@ class Customer(db.Model):
   reg_num = db.StringProperty(required=True)
   full_name = db.TextProperty(required=True)
   inn = db.StringProperty(required=True)
-  kpp = db.StringProperty(required=True)
-  tofk = db.StringProperty(required=True)
+  kpp = db.StringProperty()
+  tofk = db.StringProperty()
 
   @classmethod
   def Aggregated(cls):
@@ -31,7 +31,7 @@ class Customer(db.Model):
 class Supplier(db.Model):
   participant_type = db.StringProperty()
   inn = db.StringProperty(required=True)
-  kpp = db.StringProperty(required=True)
+  kpp = db.StringProperty()
   organization_form = db.StringProperty()
   organization_name = db.TextProperty(required=True)
   factual_address = db.StringProperty()
