@@ -41,6 +41,20 @@
     }
 
     {
+      var evalledData = eval("(" + get_json('/top_suppliers?region={{region_code}}&view=json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+      
+      var table = new google.visualization.Table(document.getElementById('suppliers_table'));
+      table.draw(data, {showRowNumber: true});
+      // 
+      // 
+      // table.draw(data, {allowHtml: true, showRowNumber: true});
+    }
+
+    {
       var evalledData = eval("(" + get_json('/region_bar_chart.json?code={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
@@ -170,6 +184,13 @@
                     <h2>Top закупщики региона</h2>      
                     <div class="cb"></div>
                      <div id="customers_table"></div>
+                    <div class="cb"></div>    
+                </div> 
+
+                <div class="table_wrapper">  
+                    <h2>Top продавцы региона</h2>      
+                    <div class="cb"></div>
+                     <div id="suppliers_table"></div>
                     <div class="cb"></div>    
                 </div> 
                
