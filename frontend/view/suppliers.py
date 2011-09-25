@@ -29,7 +29,8 @@ class TopSuppliersView(webapp.RequestHandler):
     end_date_str = self.request.get('end_date')
 
     query = (model.Expense.all()
-        .filter('customer = ', model.Customer.Aggregated()))
+        .filter('customer = ', model.Customer.Aggregated())
+        .filter('type = ', model.AGGREGATE_TYPE))
     
     if start_date_str and end_date_str:
       start_date = datetime.datetime.strptime(start_date_str, DATE_FORMAT)
@@ -42,6 +43,9 @@ class TopSuppliersView(webapp.RequestHandler):
 
     if self.request.get('region'):
       query = query.filter('region = ', self.request.get('region'))
+    else:
+      query = query.filter('region = ', model.AGGREGATE_REGION)
+  
     query = query.order('-amount')
     query = query.fetch(int(self.request.get('limit', '20')))
 

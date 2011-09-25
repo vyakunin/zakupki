@@ -13,6 +13,8 @@ from google.appengine.api import datastore
 from google.appengine.ext import db
 
 AGGREGATE_DATE = datetime.datetime(9999, 12, 31)
+AGGREGATE_REGION = '0'
+AGGREGATE_TYPE = '0'
 
 class Customer(db.Model):
   reg_num = db.StringProperty(required=True)
@@ -59,3 +61,5 @@ class Expense(db.Model):
   date = db.DateProperty(required=True)
   # Region of payment
   region = db.StringProperty(required=True)  # 2-digit code
+  # Type
+  type = db.StringProperty(required=True) # 2-digit code
