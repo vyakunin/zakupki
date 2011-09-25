@@ -39,6 +39,9 @@ transformers:
     - property: region
       external_name: region
 
+    - property: type
+      external_name: type
+
 - kind: Customer
   connector: csv
   property_map:
