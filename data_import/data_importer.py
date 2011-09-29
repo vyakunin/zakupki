@@ -151,9 +151,13 @@ def BuildKey(spent, mask):
   else:
     key.append(spent['customer'])
   i += 1
-  key.append(spent['supplier']) # never aggregating
+  if mask[i]: # supplier
+    key.append('0')
+  else:
+    key.append(spent['supplier'])
+  i += 1
   if mask[i]: #  date
-    key.append('9999.12.31')
+    key.append('9999-12-31')
   else:
     key.append(spent['date'])
   i += 1
@@ -169,10 +173,16 @@ def BuildKey(spent, mask):
   return tuple(key)
 
 def BuildMask(mask):
-  a = [0, 0, 0, 0]
-  for i in range(4):
+  a = [0, 0, 0, 0, 0]
+  aggCount = 0
+  for i in range(5):
     a[i] = mask & (1 << i)
-  return a
+    if a[i]:
+      aggCount += 1
+  if aggCount > 2:
+    return a
+  else:
+    return None
 
 def PrintAggregatedForMask(spents, mask, csvWriter):
   aggregatedSpents = {}
@@ -193,9 +203,10 @@ def PrintSpents(spents, filename):
                          quotechar='"', quoting=csv.QUOTE_MINIMAL)
   csvWriter.writerow(['customer', 'supplier', 'amount', 'date', 'region', 'type'])
   #  TODO(vyakunin): aggregate per date, region, type, customer (9999.12.31)
-  for mask in range(1 << 4): #  TODO(vyakunin): palevo
+  for mask in range(1 << 5): #  TODO(vyakunin): palevo
     a = BuildMask(mask)
-    PrintAggregatedForMask(spents, a, csvWriter)
+    if not a is None:
+      PrintAggregatedForMask(spents, a, csvWriter)
   
 def PrintCustomers(customers, filename):
   csvWriter = csv.DictWriter(open(filename, 'wb'),
