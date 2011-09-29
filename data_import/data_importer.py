@@ -73,7 +73,7 @@ class XmlImporter(object):
     assert supplierCount < 2 #TODO(vyakunin): can't understand what I do if its false
     self.AddSupplier(supplier)
     products = expense.xpath('./oos:products/oos:product',
-                          namespaces=XmlImporter.namespaces)
+                             namespaces=XmlImporter.namespaces)
     
     total = 0.0
     productCount = len(products)
@@ -101,7 +101,7 @@ class XmlImporter(object):
                         'amount':value,
                         'customer':customer['regNum'],
                         'supplier':supplier['inn'],
-                        'region':customer['inn'][:2],
+                        'region':customer['kpp'][:2],
                         'type':okdp[:2]})
     
     if abs(total - price) > 1.0:
