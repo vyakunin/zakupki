@@ -8,11 +8,13 @@ All rights reserved.
 """
 
 from lxml import etree
+
 import csv
 import getopt
 import math
 import os
 import sys
+import dateutil.parser
 import zipfile
 
 class XmlImporter(object):
@@ -56,6 +58,9 @@ class XmlImporter(object):
 
   def ParseExpense(self, expense):
     date = expense.xpath('string(./oos:protocolDate)', namespaces=XmlImporter.namespaces)
+    publishDate = expense.xpath('string(./oos:publishDate)', namespaces=XmlImporter.namespaces)
+    publishDate = dateutil.parser.parse(publishDate)
+    regNum = expense.xpath('string(./oos:regNum)', namespaces=XmlImporter.namespaces)
     if not date:
       date = expense.xpath('string(./oos:signDate)', namespaces=XmlImporter.namespaces)
     date = date[:-2] + '01'
@@ -102,7 +107,9 @@ class XmlImporter(object):
                         'customer':customer['regNum'],
                         'supplier':supplier['inn'],
                         'region':customer['kpp'][:2],
-                        'type':okdp[:2]})
+                        'type':okdp[:2],
+                        'regNum':regNum,
+                        'publishDate':publishDate})
     
     if abs(total - price) > 1.0:
       print 'Dropping contract with incorrect price: sum for products = %f, while contract price is %f' % (total, price)
@@ -186,7 +193,7 @@ def BuildMask(mask):
 
 def PrintAggregatedForMask(spents, mask, csvWriter):
   aggregatedSpents = {}
-  for spent in spents:
+  for spent in spents.values():
     key = BuildKey(spent, mask)
     if key in aggregatedSpents:
       aggregatedSpents[key] += spent['amount']
@@ -267,7 +274,7 @@ def main():
     elif name == '--outputCustomers':
       outputCustomers = value
   importer = XmlImporter()
-  spents = []
+  spents = {}
   customers = {}
   suppliers = {}
   for dirname, dirnames, filenames in os.walk(directory):
@@ -281,8 +288,12 @@ def main():
           inputFile = os.path.join(tmpdir, name)
           print inputFile
           parsed = importer.ParseData(open(inputFile, "r"))
-          spents.extend(parsed['spents'])
-          
+          for spent in parsed['spents']:
+            regNum = spent['regNum']
+            if (not regNum in spents or 
+                (spent['publishDate'] > spents[regNum]['publishDate'])):
+              spents[regNum] = spent
+             
           for key, value in parsed['customers'].iteritems():
             if not key in customers:
               customers[key] = value
