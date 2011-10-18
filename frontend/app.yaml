@@ -4,16 +4,16 @@ runtime: python
 api_version: 1
 
 handlers:
-
-
-- url: /byperiod
-  static_dir: byperiod
-
 - url: /css
   static_dir: css
-  
+
+- url: /datastore_admin
+  script: $PYTHON_LIB/google/appengine/ext/datastore_admin/main.py
+  login: admin
+
 - url: /.*
   script: app.py
 
 builtins:
 - remote_api: on
+- datastore_admin: on
