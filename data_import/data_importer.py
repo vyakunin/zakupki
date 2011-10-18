@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/python2.6
 # encoding: utf-8
 """
 data_importer.py
@@ -150,6 +150,12 @@ class XmlImporter(object):
     if not supplier['inn'] in self.suppliers: #  TODO(vyakunin): is it correct to use inn as key?
       self.suppliers[supplier['inn']] = supplier
 
+CUSTOMER_MASK_INDEX = 0
+SUPPLIER_MASK_INDEX = 1
+DATE_MASK_INDEX = 2
+REGION_MASK_INDEX =  3
+TYPE_MASK_INDEX = 4
+
 def BuildKey(spent, mask):
   key = []
   i = 0
@@ -186,10 +192,7 @@ def BuildMask(mask):
     a[i] = mask & (1 << i)
     if a[i]:
       aggCount += 1
-  if aggCount > 2:
-    return a
-  else:
-    return None
+  return a
 
 def PrintAggregatedForMask(spents, mask, csvWriter):
   aggregatedSpents = {}
@@ -205,14 +208,40 @@ def PrintAggregatedForMask(spents, mask, csvWriter):
     row.extend(list(key[2:])) # date, region, type
     csvWriter.writerow(row)
 
+def IsMaskLikeThis(mask, *args):
+  """Checks whether the mask aggregates by all fields except *args"""
+  not_aggregates = set(args)
+  for i, value in enumerate(mask):
+    # if value is True we do aggregate
+    if (i in not_aggregates) == bool(value):
+      return False
+  return True
+
 def PrintSpents(spents, filename):
   csvWriter = csv.writer(open(filename, 'wb'), delimiter=',',
                          quotechar='"', quoting=csv.QUOTE_MINIMAL)
   csvWriter.writerow(['customer', 'supplier', 'amount', 'date', 'region', 'type'])
+  
   #  TODO(vyakunin): aggregate per date, region, type, customer (9999.12.31)
   for mask in range(1 << 5): #  TODO(vyakunin): palevo
     a = BuildMask(mask)
-    if not a is None:
+    # For the time of being we need just several aggregations:
+    # * customers
+    # * suppliers
+    # * spent types
+    # * regions
+    # * region x date
+    # * region x customer
+    # * region x supplier
+    # * region x type
+    if (IsMaskLikeThis(a, CUSTOMER_MASK_INDEX) or
+        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX) or
+        IsMaskLikeThis(a, REGION_MASK_INDEX) or
+        IsMaskLikeThis(a, TYPE_MASK_INDEX) or
+        IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX) or
+        IsMaskLikeThis(a, REGION_MASK_INDEX, CUSTOMER_MASK_INDEX) or
+        IsMaskLikeThis(a, REGION_MASK_INDEX, SUPPLIER_MASK_INDEX) or
+        IsMaskLikeThis(a, REGION_MASK_INDEX, TYPE_MASK_INDEX)):
       PrintAggregatedForMask(spents, a, csvWriter)
   
 def PrintCustomers(customers, filename):
