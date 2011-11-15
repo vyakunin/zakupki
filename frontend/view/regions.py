@@ -81,7 +81,9 @@ class ByRegionView(webapp.RequestHandler):
       if record.region != model.AGGREGATE_REGION:
         values_dict[record.region] += record.amount
     
-    region_values = [{'key': r, 'name': region_util.names[r], 'value': v}
+    region_values = [{'key': r,
+                      'name': region_util.names.get(r, 'Unknown'),
+                      'value': v}
                      for r, v in sorted(values_dict.items(),
                                         key=lambda a:a[1],
                                         reverse=True)]
