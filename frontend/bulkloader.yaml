@@ -55,6 +55,7 @@ transformers:
 
     - property: full_name
       external_name: full_name
+      import_transform: db.Text
 
     - property: inn
       external_name: inn
