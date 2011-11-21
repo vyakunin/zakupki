@@ -42,7 +42,7 @@ class RegionView(webapp.RequestHandler):
   
   def GetTemplateValues(self):
     code = self.request.get('code')
-    return {'region_name': region_util.names[code], 
+    return {'region_name': region_util.names.get(code, 'Unknown'),
             'region_code': code}
   
   def get(self):
