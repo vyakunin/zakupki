@@ -66,24 +66,19 @@
 
       formatter.format(data, 1); // Apply formatter to second column
       var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
-      chart.draw(data, {width: 450, height: 300, title: 'Закупки'});
-    }
-    
+      chart.draw(data, {width: 400, height: 400,
+                        chartArea: {top: 20, height: "80%"},
+                        legend: "none",
+                        is3D: true});
+      var table = new google.visualization.Table(document.getElementById('categories_table'));
+      table.draw(data, {showRowNumber: true});
+    } 
   }
-  
 </script>
-
-
 </head>
 
-
-
 <body>
-
-<!-- general content -->
 <div class="main_wrapper">
-
-	
     <!-- logo and navy -->
 	<div class="header_wrapper">
         
@@ -107,59 +102,7 @@
     
     <!-- content -->
     <div class="content_wrapper">
-    	<div class="content_wide">
-            
-            <!-- form -->
-	       <div class="form_wrapper">
-        
-                <form>
-                    <div class="form_fields_wrapper">
-                       <div class="left">
-                            Период с 
-                            <select id="select_date_from" name="date_from">
-                                <option value="01" selected="selected">Январь</option>
-                                <option value="02">Февраль</option>
-                                <option value="03">Март</option>
-                                <option value="04">Апрель</option>
-                                <option value="05">Май</option>
-                                <option value="06">Июнь</option>
-                                <option value="07">Июль</option>
-                                <option value="08">Август</option>
-                                <option value="09">Сентябрь</option>
-                                <option value="10">Октябрь</option>
-                                <option value="11">Ноябрь</option>
-                                <option value="12">Декабрь</option>
-                            </select>
-                            
-                        </div>
-                        <div class="right">
-                            Период по 
-                            <select id="select_date_to" name="date_to">
-                                <option value="01">Январь</option>
-                                <option value="02">Февраль</option>
-                                <option value="03">Март</option>
-                                <option value="04">Апрель</option>
-                                <option value="05">Май</option>
-                                <option value="06">Июнь</option>
-                                <option value="07">Июль</option>
-                                <option value="08">Август</option>
-                                <option value="09" selected="selected">Сентябрь</option>
-                                <option value="10">Октябрь</option>
-                                <option value="11">Ноябрь</option>
-                                <option value="12">Декабрь</option>
-                            </select>
-                        </div>
-                        
-                        <div class="search_but">
-                            <input type="button" id="search_button" name="search_button" value="Искать" />
-                        </div>
-                     </div>   
-                </form>
-                <div class="cb"></div>
-            </div>
-            <!-- / form -->   
-                    
-                    
+    	<div class="content_wide">            
              <!-- data -->
         	<div class="data_wrapper">
                 
@@ -187,7 +130,16 @@
                 <div class="table_wrapper">        
                     <h2>Закупки по категориям</h2>
                     <div class="cb"></div>
-                    <div id="categories_chart"></div>
+                    <table>
+                      <tr>
+                        <td style="vertical-align: top;">
+                          <div id="categories_chart"></div>                          
+                        </td>
+                        <td style="vertical-align: top;">
+                          <div id="categories_table"></div>
+                        </td>
+                      </tr>
+                    </table>
                     <div class="cb"></div>    
                 </div> 
                 
