@@ -29,7 +29,6 @@ class ByTypeView(webapp.RequestHandler):
 
     region = self.request.get('code')
     if not region:
-      logging.info("Hello world")
       query = query.filter('region = ', model.AGGREGATE_REGION)
     else:
       query = query.filter('region = ', region)
@@ -38,7 +37,7 @@ class ByTypeView(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), '../templates/region_pie_chart.json')
     self.response.out.write(
         template.render(path, {'records':
-                               [{'category': product_util.ProductCategory.ByCode(str(record.type)),
+                               [{'category': product_util.ProductCategory.NameByCode(record.type),
                                  'value': record.amount}
                                 for record in query
                                 if record.type != model.AGGREGATE_TYPE]}))
