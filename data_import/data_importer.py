@@ -234,6 +234,10 @@ def PrintSpents(spents, filename):
     # * region x customer
     # * region x supplier
     # * region x type
+    # * customer x type
+    # * customer x date
+    # * supplier x type
+    # * supplier x date
     if (IsMaskLikeThis(a, CUSTOMER_MASK_INDEX) or
         IsMaskLikeThis(a, SUPPLIER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX) or
@@ -241,7 +245,11 @@ def PrintSpents(spents, filename):
         IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, CUSTOMER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, SUPPLIER_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX, TYPE_MASK_INDEX)):
+        IsMaskLikeThis(a, REGION_MASK_INDEX, TYPE_MASK_INDEX) or
+        IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, TYPE_MASK_INDEX) or
+        IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, DATE_MASK_INDEX) or
+        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, TYPE_MASK_INDEX) or
+        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, DATE_MASK_INDEX)):
       PrintAggregatedForMask(spents, a, csvWriter)
   
 def PrintCustomers(customers, filename):

@@ -80,3 +80,10 @@ indexes:
   - name: supplier
   - name: amount
     direction: desc
+
+- kind: Expense
+  properties:
+  - name: region
+  - name: supplier
+  - name: type
+  - name: date

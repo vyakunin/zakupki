@@ -115,27 +115,24 @@ class ByMonthView(webapp.RequestHandler):
     """    
     query = model.Expense.all()
     
-    supplier = self.request.get('supplier')
     if supplier:
-      query = query.filter('supplier = ', supplier)
+      query.filter('supplier = ', db.Key.from_path('Supplier', self.request.get('supplier')))
     else:
-      query = query.filter('supplier =  ', model.Supplier.Aggregated())
+      query.filter('supplier =  ', model.Supplier.Aggregated())
 
-    customer = self.request.get('customer')
-    if supplier:
-      query = query.filter('customer = ', customer)
+    if self.request.get('customer'):
+      query.filter('customer = ', db.Key.from_path('Customer', self.request.get('customer')))
     else:
-      query = query.filter('customer =  ', model.Customer.Aggregated())
+      query.filter('customer =  ', model.Customer.Aggregated())
 
-    query = query.filter('type = ', model.AGGREGATE_TYPE)
+    query.filter('type = ', model.AGGREGATE_TYPE)
 
-    region = self.request.get('code')
     if region:
-      query = query.filter('region = ', region)
+      query.filter('region = ', self.request.get('code'))
     else:      
-      query = query.filter('region = ', model.AGGREGATE_REGION)
+      query.filter('region = ', model.AGGREGATE_REGION)
 
-    query = query.order('date')
+    query.order('date')
 
     values_dict = collections.defaultdict(lambda: 0.0)
     template_records = []

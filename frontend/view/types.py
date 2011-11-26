@@ -20,19 +20,25 @@ class ByTypeView(webapp.RequestHandler):
   def get(self):
     """Renders JSON for pie chart.
     """
+    query = model.Expense.all()
+    if self.request.get('supplier'):
+      query = query.filter('supplier =  ', db.Key.from_path('Supplier', self.request.get('supplier')))
+    else:
+      query = query.filter('supplier =  ', model.Supplier.Aggregated())
 
-    query = (model.Expense.all()
-        .filter('supplier =  ', model.Supplier.Aggregated())
-        .filter('customer = ', model.Customer.Aggregated())
-        .filter('date = ', model.AGGREGATE_DATE)
-        .order('-amount'))
+    if self.request.get('customer'):
+      logging.info('Filter by customer')
+      query = query.filter('customer =  ', db.Key.from_path('Customer', self.request.get('customer')))
+    else:
+      query = query.filter('customer =  ', model.Customer.Aggregated())
 
-    region = self.request.get('code')
-    if not region:
+    if not self.request.get('code'):
       query = query.filter('region = ', model.AGGREGATE_REGION)
     else:
-      query = query.filter('region = ', region)
+      query = query.filter('region = ', self.request.get('code'))
 
+    query = query.filter('date = ', model.AGGREGATE_DATE).order('-amount')
+    
     self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
     path = os.path.join(os.path.dirname(__file__), '../templates/region_pie_chart.json')
     self.response.out.write(
