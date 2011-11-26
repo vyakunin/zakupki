@@ -39,7 +39,7 @@ function drawTable() {
     table.draw(data, {showRowNumber: true});
   }
   {
-    var evalledData = eval("(" + get_json('/region_pie_chart.json') + ")");
+    var evalledData = eval("(" + get_json('/types.json') + ")");
     var data = new google.visualization.DataTable(evalledData);
     var formatter = new google.visualization.NumberFormat(
         {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
@@ -107,7 +107,7 @@ function drawTable() {
     <div class="cb"></div>
 </div> 
 <div class="table_wrapper">  
-  <h2>Закупке по дате заключения контракта</h2>      
+  <h2>Закупки по дате заключения контракта</h2>      
   <div class="cb"></div>
   <div id="months_bar_chart"></div>
   <div class="cb"></div>
