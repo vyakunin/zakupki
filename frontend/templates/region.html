@@ -73,25 +73,20 @@
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
       formatter.format(data, 1); // Apply formatter to second column
-
-      var chart = new google.visualization.PieChart(document.getElementById('types_pie_chart'));
-      chart.draw(data, {width: 800, height: 500, title: 'Закупки'});
+      var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
+      chart.draw(data, {width: 400, height: 400,
+                        chartArea: {top: 20, height: "80%"},
+                        legend: "none",
+                        is3D: true});
+      var table = new google.visualization.Table(document.getElementById('categories_table'));
+      table.draw(data, {showRowNumber: true});
+      
     }
   }
   
 </script>
-
-
 </head>
-
-
-
-
-
-
 <body>
-
-<!-- general content -->
 <div class="main_wrapper">
 
 	
@@ -103,12 +98,10 @@
         	<ul class="top_navy blue_bg_2">
             	<li class="first"><a href="/">Главная</a></li>
                 <!-- <li><a href="#">Top поставщиков</a></li>
-                <li><a href="#">Top потребителей</a></li> -->
-                
+                <li><a href="#">Top потребителей</a></li> -->                
  			</ul>
         </div>
         <!-- / navy -->
-        
     	<div class="cb"></div>
     </div>
     <!-- / logo and navy -->
@@ -195,8 +188,16 @@
                 </div> 
                
                 <div id="months_bar_chart"></div>
-                <div id="types_pie_chart"></div>
-                
+                <table>
+                  <tr>
+                    <td style="vertical-align: top;">
+                      <div id="categories_chart"></div>                          
+                    </td>
+                    <td style="vertical-align: top;">
+                      <div id="categories_table"></div>
+                    </td>
+                  </tr>
+                </table>                
                 
            	    <div class="cb"></div>
             </div>
