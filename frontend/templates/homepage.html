@@ -26,7 +26,7 @@ function drawTable() {
 
     formatter.format(data, 1); // Apply formatter to second column
     var table = new google.visualization.Table(document.getElementById('top_customers'));
-    table.draw(data, {showRowNumber: true});
+    table.draw(data, {showRowNumber: true, allowHtml: true});
   }
   {
     var evalledData = eval("(" + get_json('/top_suppliers?view=json') + ")");
@@ -54,7 +54,7 @@ function drawTable() {
     table.draw(data, {showRowNumber: true});
   }
   {
-    var evalledData = eval("(" + get_json('/region_bar_chart.json') + ")");
+    var evalledData = eval("(" + get_json('/time_chart.json') + ")");
     var data = new google.visualization.DataTable(evalledData);
     var formatter = new google.visualization.NumberFormat(
         {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});

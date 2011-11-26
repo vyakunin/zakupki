@@ -113,17 +113,29 @@ class ByMonthView(webapp.RequestHandler):
   def get(self):
     """Renders JSON for bar chart
     """    
-    query = (model.Expense.all()
-        .filter('supplier =  ', model.Supplier.Aggregated())
-        .filter('customer = ', model.Customer.Aggregated())
-        .filter('type = ', model.AGGREGATE_TYPE)
-        .order('date'))
+    query = model.Expense.all()
+    
+    supplier = self.request.get('supplier')
+    if supplier:
+      query = query.filter('supplier = ', supplier)
+    else:
+      query = query.filter('supplier =  ', model.Supplier.Aggregated())
+
+    customer = self.request.get('customer')
+    if supplier:
+      query = query.filter('customer = ', customer)
+    else:
+      query = query.filter('customer =  ', model.Customer.Aggregated())
+
+    query = query.filter('type = ', model.AGGREGATE_TYPE)
 
     region = self.request.get('code')
     if region:
       query = query.filter('region = ', region)
     else:      
       query = query.filter('region = ', model.AGGREGATE_REGION)
+
+    query = query.order('date')
 
     values_dict = collections.defaultdict(lambda: 0.0)
     template_records = []
@@ -148,7 +160,7 @@ class ByMonthView(webapp.RequestHandler):
                                'value': value})
 
     self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-    path = os.path.join(os.path.dirname(__file__), '../templates/region_bar_chart.json')
+    path = os.path.join(os.path.dirname(__file__), '../templates/time_chart.json')
     self.response.out.write(template.render(path,
                                             {'records': template_records}))
 

@@ -8,14 +8,14 @@
   function drawTable() {  
     
     {
-      var evalledData = eval("(" + get_json('/top_customers?region={{region_code}}&view=json') + ")");
+      var evalledData = eval("(" + get_json('/top_customers?region={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
       formatter.format(data, 1); // Apply formatter to second column
       
       var table = new google.visualization.Table(document.getElementById('customers_table'));
-      table.draw(data, {showRowNumber: true});
+      table.draw(data, {showRowNumber: true, allowHtml: true});
       // 
       // 
       // table.draw(data, {allowHtml: true, showRowNumber: true});
@@ -36,7 +36,7 @@
     }
 
     {
-      var evalledData = eval("(" + get_json('/region_bar_chart.json?code={{region_code}}') + ")");
+      var evalledData = eval("(" + get_json('/time_chart.json?code={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
