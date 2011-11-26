@@ -1,26 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title> Регион </title>
-
-<link href="css/main.css" rel="stylesheet" type="text/css" />
-
-<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+{% extends "base.html" %}
+{% block title %}{{region_name}}{% endblock %}
+{% block inner_scripts %}
 <script type='text/javascript'>
-
-  // ------------ jquery start  --------------- //
-  google.load("jquery", "1.6.4");
-   
-  function get_json(myUrl) {
-    return $.ajax({
-      url: myUrl,
-      dataType: 'json', 
-      async:false,
-    }).responseText;
-  } 
-  // ------------ jquery end  --------------- // 
-       
   google.load('visualization', '1', {packages:['table']});
   google.load('visualization', '1', {packages:['corechart']});
   google.setOnLoadCallback(drawTable);
@@ -83,100 +64,45 @@
       
     }
   }
-  
 </script>
-</head>
-<body>
-<div class="main_wrapper">
-
-	
-    <!-- logo and navy -->
-	<div class="header_wrapper"  style="display:block">
-        
-        <!-- navy -->
-    	<div class="main_navy_wrapper">
-        	<ul class="top_navy blue_bg_2">
-            	<li class="first"><a href="/">Главная</a></li>
-                <!-- <li><a href="#">Top поставщиков</a></li>
-                <li><a href="#">Top потребителей</a></li> -->                
- 			</ul>
-        </div>
-        <!-- / navy -->
-    	<div class="cb"></div>
-    </div>
-    <!-- / logo and navy -->
+{% endblock %}
+{% block content %}
+<h2 class="center_title">{{region_name}}</h2> 
     
-    <!-- inner title -->
-	<div class="inner_title_wrapper blue_bg_inner" style="margin-top:5px;">
-	  <span>RusZakupki.org</span>
-	</div>
-    <!-- / inner title -->
-    
-    <!-- content -->
-    <div class="content_wrapper">
-    	<div class="content_wide">                    
+<div class="table_wrapper">  
+    <h2>Top закупщики региона</h2>      
+    <div class="cb"></div>
+     <div id="customers_table"></div>
+    <div class="cb"></div>    
+</div> 
 
-             <!-- data -->
-        	<div class="data_wrapper">
-                
-                <h2 class="center_title">{{region_name}}</h2> 
-                    
-                <div class="table_wrapper">  
-                    <h2>Top закупщики региона</h2>      
-                    <div class="cb"></div>
-                     <div id="customers_table"></div>
-                    <div class="cb"></div>    
-                </div> 
+<div class="table_wrapper">  
+    <h2>Top продавцы региона</h2>      
+    <div class="cb"></div>
+     <div id="suppliers_table"></div>
+    <div class="cb"></div>    
+</div> 
 
-                <div class="table_wrapper">  
-                    <h2>Top продавцы региона</h2>      
-                    <div class="cb"></div>
-                     <div id="suppliers_table"></div>
-                    <div class="cb"></div>    
-                </div> 
-               
-                <div class="table_wrapper">  
-                  <h2>Закупки по категориям</h2>
-             	    <div class="cb"></div>
-                  <table>
-                    <tr>
-                      <td style="vertical-align: top;">
-                        <div id="categories_chart"></div>                          
-                      </td>
-                      <td style="vertical-align: top;">
-                        <div id="categories_table"></div>
-                      </td>
-                    </tr>
-                  </table>                
-             	    <div class="cb"></div>
-                </div> 
-                <div class="table_wrapper">  
-                  <h2>Закупке по дате заключения контракта</h2>      
-                  <div class="cb"></div>
-                  <div id="months_bar_chart"></div>
-                  <div class="cb"></div>
-                </div> 
-                
-            </div>
-            <!-- / data -->
-                    
-            <div class="cb"></div>
-        </div>
-        <div class="cb"></div>
-    </div>
-    <!-- / content -->
-
-    <!-- footer -->
-    <div class="footer_wrapper">
-    	<div class="copyright_1">2011 Визуализация госзакупок</div>
-    	<div class="cb"></div>
-    </div>
-    <!-- / footer -->
-    
-	<div class="cb"></div>
-</div>
-<!-- / general content -->
-
-
-</body>
-</html>
+<div class="table_wrapper">  
+  <h2>Закупки по категориям</h2>
+    <div class="cb"></div>
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+        <div id="categories_chart"></div>                          
+      </td>
+      <td style="vertical-align: top;">
+        <div id="categories_table"></div>
+      </td>
+    </tr>
+  </table>                
+    <div class="cb"></div>
+</div> 
+<div class="table_wrapper">  
+  <h2>Закупке по дате заключения контракта</h2>      
+  <div class="cb"></div>
+  <div id="months_bar_chart"></div>
+  <div class="cb"></div>
+</div> 
+<!-- / content -->
+{% endblock %}
