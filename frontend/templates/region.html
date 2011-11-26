@@ -49,7 +49,7 @@
     }
     
     {
-      var evalledData = eval("(" + get_json('/region_pie_chart.json?code={{region_code}}') + ")");
+      var evalledData = eval("(" + get_json('/types.json?code={{region_code}}') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
