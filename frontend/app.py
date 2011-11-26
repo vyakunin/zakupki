@@ -13,6 +13,7 @@ from view import homepage
 from view import customers
 from view import regions
 from view import suppliers
+from view import time_chart
 from view import types
 
 
@@ -20,7 +21,7 @@ app = webapp2.WSGIApplication(
     [('/', homepage.HomePageView),
      ('/region', regions.RegionView),
      ('/regions.json', regions.ByRegionView),
-     ('/time_chart.json', regions.ByMonthView),
+     ('/time_chart.json', time_chart.TimeChartView),
      ('/region_pie_chart.json', types.ByTypeView),
      ('/customer', customers.CustomerView),
      ('/top_customers', customers.TopCustomerView),
