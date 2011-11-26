@@ -17,9 +17,23 @@ from google.appengine.ext.webapp import template
 
 import model
 
-HTML_TEMPLATE_PATH = '../templates/customers.html'
+CUSTOMER_HTML_TEMPLATE_PATH = '../templates/customer.html'
 JSON_TEMPLATE_PATH = '../templates/customers.json'
 DATE_FORMAT = '%Y.%m.%d'
+
+
+class CustomerView(webapp.RequestHandler):
+  def GetTemplateValues(self):
+    id = self.request.get('id')
+    customer = model.Customer.get_by_key_name(id)
+    return {'customer': customer}
+
+  def get(self):
+    template_values = self.GetTemplateValues()
+
+    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    path = os.path.join(os.path.dirname(__file__), CUSTOMER_HTML_TEMPLATE_PATH)
+    self.response.out.write(template.render(path, template_values))
 
 
 class TopCustomerView(webapp.RequestHandler):
@@ -73,14 +87,8 @@ class TopCustomerView(webapp.RequestHandler):
       region: Optional 2-digit region code
       view: ['json','html'], default is 'html'
     """
-    view_type = self.request.get('view', 'html')
     template_values = self.GetTemplateValues()
 
-    if view_type == 'html':
-      self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
-      path = os.path.join(os.path.dirname(__file__), HTML_TEMPLATE_PATH)
-      self.response.out.write(template.render(path, template_values))
-    elif view_type == 'json':
-      self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-      path = os.path.join(os.path.dirname(__file__), JSON_TEMPLATE_PATH)
-      self.response.out.write(template.render(path, template_values))
+    self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
+    path = os.path.join(os.path.dirname(__file__), JSON_TEMPLATE_PATH)
+    self.response.out.write(template.render(path, template_values))

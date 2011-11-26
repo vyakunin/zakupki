@@ -20,7 +20,11 @@ a { outline: none;}
 
 /*------------------------ GENERAL ENDS ------------------------*/
 
-
+a.external {
+  color: #36B;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFZJREFUeF59z4EJADEIQ1F36k7u5E7ZKXeUQPACJ3wK7UNokVxVk9kHnQH7bY9hbDyDhNXgjpRLqFlo4M2GgfyJHhjq8V4agfrgPQX3JtJQGbofmCHgA/nAKks+JAjFAAAAAElFTkSuQmCC) center right no-repeat;
+  padding-right: 13px;
+}
 
 /*------------------------ LOGO AND NAVY BEGINS ------------------------*/
 .header_wrapper { margin: 10px 0 5px; display:none; }
