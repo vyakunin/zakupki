@@ -16,7 +16,7 @@ from util import product_util
 import model
 
 
-class ByTypeView(webapp.RequestHandler):
+class TypesChartView(webapp.RequestHandler):
   def get(self):
     """Renders JSON for pie chart.
     """
@@ -40,7 +40,7 @@ class ByTypeView(webapp.RequestHandler):
     query = query.filter('date = ', model.AGGREGATE_DATE).order('-amount')
     
     self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-    path = os.path.join(os.path.dirname(__file__), '../templates/region_pie_chart.json')
+    path = os.path.join(os.path.dirname(__file__), '../templates/types.json')
     self.response.out.write(
         template.render(path, {'records':
                                [{'category': product_util.ProductCategory.NameByCode(record.type),
