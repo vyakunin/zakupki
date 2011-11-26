@@ -118,7 +118,7 @@ a { outline: none;}
 
 /*------------------------ INNER TITLE BEGINS ------------------------*/
 .inner_title_wrapper { width: 960px; float: left; height: 40px; line-height: 40px;  margin-top: 20px;}
-.inner_title_wrapper span { float: left; text-transform: uppercase; color: #ffffff; font-weight: bold; font-size: 18px; margin: 0 0 0 15px;}
+.inner_title_wrapper span { float: left; color: #ffffff; font-weight: bold; font-size: 18px; margin: 0 0 0 15px;}
 /*------------------------ INNER TITLE ENDS ------------------------*/
 
 
