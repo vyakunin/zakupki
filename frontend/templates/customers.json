@@ -1,0 +1,9 @@
+{
+    "cols": [{"id": "region", "label": "Покупатель", "type": "string"},
+            {"id": "sum", "label": "Сумма", "type": "number"}],
+    "rows": [
+  {% for record in records %}
+    {"c":[{"v": '<a href="/customer?id={{record.customer.key.name}}">{{record.customer.full_name|safe}}</a>'}, {"v": {{record.value}}}]},
+  {% endfor %}
+  ]
+}

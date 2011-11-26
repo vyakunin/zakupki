@@ -1,0 +1,24 @@
+application: ruszakupki
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: false
+
+libraries:
+- name: django
+  version: "1.2"
+
+handlers:
+- url: /css
+  static_dir: css
+
+- url: /datastore_admin
+  script: $PYTHON_LIB/google/appengine/ext/datastore_admin/main.py
+  login: admin
+
+- url: /.*
+  script: app.app
+
+builtins:
+- remote_api: on
+- datastore_admin: on

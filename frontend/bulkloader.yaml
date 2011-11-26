@@ -1,0 +1,93 @@
+python_preamble:
+- import: base64
+- import: re
+- import: google.appengine.ext.bulkload.transform
+- import: google.appengine.ext.bulkload.bulkloader_wizard
+- import: google.appengine.ext.db
+- import: google.appengine.api.datastore
+- import: google.appengine.api.users
+#- import: model
+
+transformers:
+- kind: Expense
+  connector: csv
+  property_map:
+    - property: __key__
+      external_name: key
+      export_transform: transform.key_id_or_name_as_string
+      import_template: "%(customer)s-%(supplier)s-%(region)s-%(type)s-%(date)s"
+
+    - property: customer
+      external_name: customer
+      import_transform: transform.create_foreign_key('Customer')
+      export_transform: transform.key_id_or_name_as_string
+
+    - property: supplier
+      external_name: supplier
+      import_transform: transform.create_foreign_key('Supplier')
+      export_transform: transform.key_id_or_name_as_string
+
+    - property: amount
+      external_name: amount
+      import_transform: float
+
+    - property: date
+      external_name: date
+      import_transform: transform.import_date_time("%Y-%m-%d")
+      export_transform: transform.export_date_time("%Y-%m-%d")
+
+    - property: region
+      external_name: region
+
+    - property: type
+      external_name: type
+
+- kind: Customer
+  connector: csv
+  property_map:
+    - property: __key__
+      external_name: key
+      export_transform: transform.key_id_or_name_as_string
+      import_template: "%(reg_num)s"
+
+    - property: reg_num
+      external_name: reg_num
+
+    - property: full_name
+      external_name: full_name
+      import_transform: db.Text
+
+    - property: inn
+      external_name: inn
+
+    - property: kpp
+      external_name: kpp
+
+    - property: tofk
+      external_name: tofk
+
+- kind: Supplier
+  connector: csv
+  property_map:
+    - property: __key__
+      external_name: key
+      export_transform: transform.key_id_or_name_as_string
+      import_template: "%(inn)s"
+
+    - property: participant_type
+      external_name: participant_type
+
+    - property: inn
+      external_name: inn
+
+    - property: kpp
+      external_name: kpp
+
+    - property: organization_form
+      external_name: organization_form
+
+    - property: organization_name
+      external_name: organization_name
+
+    - property: factual_address
+      external_name: factual_address

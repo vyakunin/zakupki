@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}{{region_name}}{% endblock %}
+{% block inner_scripts %}
+<script type='text/javascript'>
+  google.load('visualization', '1', {packages:['table']});
+  google.load('visualization', '1', {packages:['corechart']});
+  google.setOnLoadCallback(drawTable);
+  function drawTable() {  
+    
+    {
+      var evalledData = eval("(" + get_json('/top_customers?region={{region_code}}') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+      
+      var table = new google.visualization.Table(document.getElementById('customers_table'));
+      table.draw(data, {showRowNumber: true, allowHtml: true});
+      // 
+      // 
+      // table.draw(data, {allowHtml: true, showRowNumber: true});
+    }
+
+    {
+      var evalledData = eval("(" + get_json('/top_suppliers?region={{region_code}}&view=json') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+      
+      var table = new google.visualization.Table(document.getElementById('suppliers_table'));
+      table.draw(data, {showRowNumber: true});
+      // 
+      // 
+      // table.draw(data, {allowHtml: true, showRowNumber: true});
+    }
+
+    {
+      var evalledData = eval("(" + get_json('/time_chart.json?code={{region_code}}') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+
+      var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
+      chart.draw(data, {width: 800, height: 500, title: 'Закупки'
+          //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
+      });
+    }
+    
+    {
+      var evalledData = eval("(" + get_json('/region_pie_chart.json?code={{region_code}}') + ")");
+      var data = new google.visualization.DataTable(evalledData);
+      var formatter = new google.visualization.NumberFormat(
+          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+      formatter.format(data, 1); // Apply formatter to second column
+      var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
+      chart.draw(data, {width: 400, height: 400,
+                        chartArea: {top: 20, height: "80%"},
+                        legend: "none",
+                        is3D: true});
+      var table = new google.visualization.Table(document.getElementById('categories_table'));
+      table.draw(data, {showRowNumber: true});
+      
+    }
+  }
+</script>
+{% endblock %}
+{% block content %}
+<h2 class="center_title">{{region_name}}</h2> 
+    
+<div class="table_wrapper">  
+    <h2>Top закупщики региона</h2>      
+    <div class="cb"></div>
+     <div id="customers_table"></div>
+    <div class="cb"></div>    
+</div> 
+
+<div class="table_wrapper">  
+    <h2>Top продавцы региона</h2>      
+    <div class="cb"></div>
+     <div id="suppliers_table"></div>
+    <div class="cb"></div>    
+</div> 
+
+<div class="table_wrapper">  
+  <h2>Закупки по категориям</h2>
+    <div class="cb"></div>
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+        <div id="categories_chart"></div>                          
+      </td>
+      <td style="vertical-align: top;">
+        <div id="categories_table"></div>
+      </td>
+    </tr>
+  </table>                
+    <div class="cb"></div>
+</div> 
+<div class="table_wrapper">  
+  <h2>Закупке по дате заключения контракта</h2>      
+  <div class="cb"></div>
+  <div id="months_bar_chart"></div>
+  <div class="cb"></div>
+</div> 
+<!-- / content -->
+{% endblock %}
