@@ -112,18 +112,18 @@ def GetNextMonth(date):
 class ByMonthView(webapp.RequestHandler):
   def get(self):
     """Renders JSON for bar chart
-    """
-    region = self.request.get('code')
-    if not region:
-      self.response.set_status(404, 'Wrong region code')
-      return
-    
+    """    
     query = (model.Expense.all()
-        .filter('region = ', region)
         .filter('supplier =  ', model.Supplier.Aggregated())
         .filter('customer = ', model.Customer.Aggregated())
         .filter('type = ', model.AGGREGATE_TYPE)
         .order('date'))
+
+    region = self.request.get('code')
+    if region:
+      query = query.filter('region = ', region)
+    else:      
+      query = query.filter('region = ', model.AGGREGATE_REGION)
 
     values_dict = collections.defaultdict(lambda: 0.0)
     template_records = []
