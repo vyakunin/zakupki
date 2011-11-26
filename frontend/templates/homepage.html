@@ -1,188 +1,115 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Главная</title>
-
-<link href="css/main.css" rel="stylesheet" type="text/css" />
-
-<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block inner_scripts %}
 <script type='text/javascript'>
+google.load('visualization', '1', {packages:['table']});
+google.load('visualization', '1', {packages:['corechart']});
+google.setOnLoadCallback(drawTable);
+function drawTable() {  
+  
+  {
+    var evalledData = eval("(" + get_json('/regions.json') + ")");
+    var data = new google.visualization.DataTable(evalledData);
 
-  // ------------ jquery start  --------------- //
-  google.load("jquery", "1.6.4");
-   
-  function get_json(myUrl) {
-    return $.ajax({
-      url: myUrl,
-      dataType: 'json', 
-      async:false,
-    }).responseText;
-  } 
-  // ------------ jquery start  --------------- // 
-   
-       
-  google.load('visualization', '1', {packages:['table']});
-  google.load('visualization', '1', {packages:['corechart']});
-  google.setOnLoadCallback(drawTable);
-  function drawTable() {  
-    
-    {
-      var evalledData = eval("(" + get_json('/regions.json') + ")");
-      var data = new google.visualization.DataTable(evalledData);
+    var formatter = new google.visualization.NumberFormat(
+        {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+    formatter.format(data, 1); // Apply formatter to second column
 
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-
-      var table = new google.visualization.Table(document.getElementById('top_regions'));
-      table.draw(data, {showRowNumber: true, allowHtml: true});
-    }
-    {
-      var evalledData = eval("(" + get_json('/top_customers?view=json') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-
-      formatter.format(data, 1); // Apply formatter to second column
-      var table = new google.visualization.Table(document.getElementById('top_customers'));
-      table.draw(data, {showRowNumber: true});
-    }
-    {
-      var evalledData = eval("(" + get_json('/top_suppliers?view=json') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-
-      var table = new google.visualization.Table(document.getElementById('top_suppliers'));
-      table.draw(data, {showRowNumber: true});
-    }
-    {
-      var evalledData = eval("(" + get_json('/region_pie_chart.json') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-
-      formatter.format(data, 1); // Apply formatter to second column
-      var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
-      chart.draw(data, {width: 400, height: 400,
-                        chartArea: {top: 20, height: "80%"},
-                        legend: "none",
-                        is3D: true});
-      var table = new google.visualization.Table(document.getElementById('categories_table'));
-      table.draw(data, {showRowNumber: true});
-    }
-    {
-      var evalledData = eval("(" + get_json('/region_bar_chart.json') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-
-      var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
-      chart.draw(data, {width: 800, height: 500, title: 'Закупки'
-          //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
-      });
-    }
+    var table = new google.visualization.Table(document.getElementById('top_regions'));
+    table.draw(data, {showRowNumber: true, allowHtml: true});
   }
+  {
+    var evalledData = eval("(" + get_json('/top_customers?view=json') + ")");
+    var data = new google.visualization.DataTable(evalledData);
+    var formatter = new google.visualization.NumberFormat(
+        {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+
+    formatter.format(data, 1); // Apply formatter to second column
+    var table = new google.visualization.Table(document.getElementById('top_customers'));
+    table.draw(data, {showRowNumber: true});
+  }
+  {
+    var evalledData = eval("(" + get_json('/top_suppliers?view=json') + ")");
+    var data = new google.visualization.DataTable(evalledData);
+    var formatter = new google.visualization.NumberFormat(
+        {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+    formatter.format(data, 1); // Apply formatter to second column
+
+    var table = new google.visualization.Table(document.getElementById('top_suppliers'));
+    table.draw(data, {showRowNumber: true});
+  }
+  {
+    var evalledData = eval("(" + get_json('/region_pie_chart.json') + ")");
+    var data = new google.visualization.DataTable(evalledData);
+    var formatter = new google.visualization.NumberFormat(
+        {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+
+    formatter.format(data, 1); // Apply formatter to second column
+    var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
+    chart.draw(data, {width: 400, height: 400,
+                      chartArea: {top: 20, height: "80%"},
+                      legend: "none",
+                      is3D: true});
+    var table = new google.visualization.Table(document.getElementById('categories_table'));
+    table.draw(data, {showRowNumber: true});
+  }
+  {
+    var evalledData = eval("(" + get_json('/region_bar_chart.json') + ")");
+    var data = new google.visualization.DataTable(evalledData);
+    var formatter = new google.visualization.NumberFormat(
+        {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+    formatter.format(data, 1); // Apply formatter to second column
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
+    chart.draw(data, {width: 800, height: 500, title: 'Закупки'
+        //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
+    });
+  }
+}
 </script>
-</head>
+{% endblock %}
+{% block content %}            
+<!--div id="visual_container"></div-->
+<div class="table_wrapper">
+    <h2>Топ регионов</h2>
+    <div class="cb"></div>
+    <div id="top_regions"></div>
+    <div class="cb"></div>
+</div> 
 
-<body>
-<div class="main_wrapper">
-    <!-- logo and navy -->
-	<div class="header_wrapper">
-        
-        <!-- navy -->
-    	<div class="main_navy_wrapper">
-        	<ul class="top_navy blue_bg_2">
-            	<li class="first"><a href="/">Главная</a></li>
-                <li><a href="#">Top поставщиков</a></li>
-                <li><a href="#">Top потребителей</a></li>
- 			</ul>
-        </div>
-        <!-- / navy -->
-        
-    	<div class="cb"></div>
-    </div>
-    <!-- / logo and navy -->
-    
-    <!-- inner title -->
-	<div class="inner_title_wrapper blue_bg_inner">
-	  <span>RusZakupki.org</span>
-	</div>
-    <!-- / inner title -->
-    
-    <!-- content -->
-    <div class="content_wrapper">
-    	<div class="content_wide">            
-             <!-- data -->
-        	<div class="data_wrapper">
-                
-                <!--div id="visual_container"></div-->
-                <div class="table_wrapper">
-                    <h2>Топ регионов</h2>
-                    <div class="cb"></div>
-                    <div id="top_regions"></div>
-                    <div class="cb"></div>
-                </div> 
-                
-                <div class="table_wrapper">    
-                    <h2>Топ покупателей</h2>
-                    <div class="cb"></div>
-                    <div id="top_customers"></div>
-                    <div class="cb"></div>
-                </div> 
-                
-                <div class="table_wrapper">        
-                    <h2>Топ продавцов</h2>
-                    <div class="cb"></div>
-                    <div id="top_suppliers"></div>
-                    <div class="cb"></div>    
-                </div> 
+<div class="table_wrapper">    
+    <h2>Топ покупателей</h2>
+    <div class="cb"></div>
+    <div id="top_customers"></div>
+    <div class="cb"></div>
+</div> 
 
-                <div class="table_wrapper">  
-                  <h2>Закупки по категориям</h2>
-             	    <div class="cb"></div>
-                  <table>
-                    <tr>
-                      <td style="vertical-align: top;">
-                        <div id="categories_chart"></div>                          
-                      </td>
-                      <td style="vertical-align: top;">
-                        <div id="categories_table"></div>
-                      </td>
-                    </tr>
-                  </table>                
-             	    <div class="cb"></div>
-                </div> 
-                <div class="table_wrapper">  
-                  <h2>Закупке по дате заключения контракта</h2>      
-                  <div class="cb"></div>
-                  <div id="months_bar_chart"></div>
-                  <div class="cb"></div>
-                </div> 
-            </div>
-            <!-- / data -->
-                    
-            <div class="cb"></div>
-        </div>
-        <div class="cb"></div>
-    </div>
-    <!-- / content -->
+<div class="table_wrapper">        
+    <h2>Топ продавцов</h2>
+    <div class="cb"></div>
+    <div id="top_suppliers"></div>
+    <div class="cb"></div>    
+</div> 
 
-    <!-- footer -->
-    <div class="footer_wrapper">
-    	<div class="copyright_1">2011 Визуализация госзакупок</div>
-    	<div class="cb"></div>
-    </div>
-    <!-- / footer -->
-    
-	<div class="cb"></div>
-</div>
-<!-- / general content -->
-
-
-</body>
-</html>
+<div class="table_wrapper">  
+  <h2>Закупки по категориям</h2>
+    <div class="cb"></div>
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+        <div id="categories_chart"></div>                          
+      </td>
+      <td style="vertical-align: top;">
+        <div id="categories_table"></div>
+      </td>
+    </tr>
+  </table>                
+    <div class="cb"></div>
+</div> 
+<div class="table_wrapper">  
+  <h2>Закупке по дате заключения контракта</h2>      
+  <div class="cb"></div>
+  <div id="months_bar_chart"></div>
+  <div class="cb"></div>
+</div> 
+{% endblock %}
