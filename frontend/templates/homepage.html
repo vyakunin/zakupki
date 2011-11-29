@@ -8,7 +8,7 @@ google.setOnLoadCallback(drawTable);
 function drawTable() {  
   
   {
-    var evalledData = eval("(" + get_json('/regions.json') + ")");
+    var evalledData = eval("(" + get_json('/expenses?dim=region') + ")");
     var data = new google.visualization.DataTable(evalledData);
 
     var formatter = new google.visualization.NumberFormat(
@@ -19,7 +19,7 @@ function drawTable() {
     table.draw(data, {showRowNumber: true, allowHtml: true});
   }
   {
-    var evalledData = eval("(" + get_json('/top_customers?view=json') + ")");
+    var evalledData = eval("(" + get_json('/expenses?dim=customer') + ")");
     var data = new google.visualization.DataTable(evalledData);
     var formatter = new google.visualization.NumberFormat(
         {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
@@ -29,7 +29,7 @@ function drawTable() {
     table.draw(data, {showRowNumber: true, allowHtml: true});
   }
   {
-    var evalledData = eval("(" + get_json('/top_suppliers?view=json') + ")");
+    var evalledData = eval("(" + get_json('/expenses?dim=supplier') + ")");
     var data = new google.visualization.DataTable(evalledData);
     var formatter = new google.visualization.NumberFormat(
         {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
@@ -39,7 +39,7 @@ function drawTable() {
     table.draw(data, {showRowNumber: true});
   }
   {
-    var evalledData = eval("(" + get_json('/types.json') + ")");
+    var evalledData = eval("(" + get_json('/expenses?dim=type') + ")");
     var data = new google.visualization.DataTable(evalledData);
     var formatter = new google.visualization.NumberFormat(
         {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});

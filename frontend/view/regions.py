@@ -20,21 +20,8 @@ from util import region_util
 import model
 
 
-TEMPLATE_PATH = '../templates/region_table.json'
 # date format for requests
 DATE_FORMAT = '%Y.%m.%d'
-
-def get_dates(request):
- return map(parse_date, 
-              (request.get('date_from'),
-               request.get('date_to')))
-
-
-def parse_date(date):
-  if date:
-    return datetime.strptime(date, DATE_FORMAT)
-  else:
-    return None
 
 
 class RegionView(webapp.RequestHandler):
@@ -56,39 +43,3 @@ class RegionView(webapp.RequestHandler):
     self.response.out.write(template.render(path, 
                                             self.GetTemplateValues()))
     
-
-class ByRegionView(webapp.RequestHandler):
-  def get(self):
-    """Renders JSON data for regions table.
-
-    Parameters:
-      none:
-    """    
-    date_from, date_to = get_dates(self.request) 
-
-    query = (model.Expense.all()
-       .filter('supplier = ', model.Supplier.Aggregated())
-       .filter('customer = ', model.Customer.Aggregated())
-       .filter('type = ', model.AGGREGATE_TYPE))
-    if date_from and date_to:
-      query = (query.filter('date > ', date_from)
-          .filter('date < ', date_to))
-    else:
-      query = query.filter('date = ', model.AGGREGATE_DATE)
-
-    values_dict = collections.defaultdict(lambda: 0.0)
-    for record in query.fetch(10000):
-      if record.region != model.AGGREGATE_REGION:
-        values_dict[record.region] += record.amount
-    
-    region_values = [{'key': r,
-                      'name': region_util.names.get(r, 'Unknown'),
-                      'value': v}
-                     for r, v in sorted(values_dict.items(),
-                                        key=lambda a:a[1],
-                                        reverse=True)]
-    self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-    path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
-    logging.info(region_values)
-    self.response.out.write(template.render(path,
-                                            {'records': region_values}))

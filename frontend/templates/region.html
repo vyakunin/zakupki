@@ -8,7 +8,7 @@
   function drawTable() {  
     
     {
-      var evalledData = eval("(" + get_json('/top_customers?region={{region_code}}') + ")");
+      var evalledData = eval("(" + get_json('/expenses?region={{region_code}}&dim=customer') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
@@ -22,7 +22,7 @@
     }
 
     {
-      var evalledData = eval("(" + get_json('/top_suppliers?region={{region_code}}&view=json') + ")");
+      var evalledData = eval("(" + get_json('/expenses?region={{region_code}}&dim=supplier') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
@@ -49,7 +49,7 @@
     }
     
     {
-      var evalledData = eval("(" + get_json('/types.json?code={{region_code}}') + ")");
+      var evalledData = eval("(" + get_json('/expenses?region={{region_code}}&dim=type') + ")");
       var data = new google.visualization.DataTable(evalledData);
       var formatter = new google.visualization.NumberFormat(
           {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
