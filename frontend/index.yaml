@@ -14,13 +14,6 @@ indexes:
   properties:
   - name: customer
   - name: date
-  - name: amount
-    direction: desc
-
-- kind: Expense
-  properties:
-  - name: customer
-  - name: date
   - name: region
   - name: supplier
   - name: amount
@@ -49,30 +42,8 @@ indexes:
   - name: customer
   - name: region
   - name: supplier
-  - name: date
-
-- kind: Expense
-  properties:
-  - name: customer
-  - name: region
-  - name: supplier
   - name: type
   - name: date
-
-- kind: Expense
-  properties:
-  - name: customer
-  - name: supplier
-  - name: type
-  - name: date
-
-- kind: Expense
-  properties:
-  - name: date
-  - name: region
-  - name: supplier
-  - name: amount
-    direction: desc
 
 - kind: Expense
   properties:
@@ -82,17 +53,3 @@ indexes:
   - name: type
   - name: amount
     direction: desc
-
-- kind: Expense
-  properties:
-  - name: date
-  - name: supplier
-  - name: amount
-    direction: desc
-
-- kind: Expense
-  properties:
-  - name: region
-  - name: supplier
-  - name: type
-  - name: date
