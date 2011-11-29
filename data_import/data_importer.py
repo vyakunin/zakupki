@@ -64,6 +64,8 @@ class XmlImporter(object):
     if not date:
       date = expense.xpath('string(./oos:signDate)', namespaces=XmlImporter.namespaces)
     date = date[:-2] + '01'
+    if date[:4] < '2007':
+      print 'Dropping expense older than 2007 year (%s)' % date[:4]
     price = expense.xpath('number(./oos:price)', namespaces=XmlImporter.namespaces)
     currencyCode = expense.xpath('string(./oos:currency/oos:code)', namespaces=XmlImporter.namespaces)
     if currencyCode != 'RUB':
@@ -153,8 +155,9 @@ class XmlImporter(object):
 CUSTOMER_MASK_INDEX = 0
 SUPPLIER_MASK_INDEX = 1
 DATE_MASK_INDEX = 2
-REGION_MASK_INDEX =  3
-TYPE_MASK_INDEX = 4
+YEAR_MASK_INDEX = 3
+REGION_MASK_INDEX =  4
+TYPE_MASK_INDEX = 5
 
 def BuildKey(spent, mask):
   key = []
@@ -171,8 +174,13 @@ def BuildKey(spent, mask):
   i += 1
   if mask[i]: #  date
     key.append('9999-12-31')
+    i += 1 # ignore year aggregating if aggregate by date is on
   else:
-    key.append(spent['date'])
+    i += 1
+    if mask[i]: #year
+      key.append(spent['date'][:4] + '-12-31')
+    else:
+      key.append(spent['date'])
   i += 1
   if mask[i]: #region
     key.append('0')
@@ -186,12 +194,9 @@ def BuildKey(spent, mask):
   return tuple(key)
 
 def BuildMask(mask):
-  a = [0, 0, 0, 0, 0]
-  aggCount = 0
-  for i in range(5):
+  a = [0, 0, 0, 0, 0, 0]
+  for i in range(6):
     a[i] = mask & (1 << i)
-    if a[i]:
-      aggCount += 1
   return a
 
 def PrintAggregatedForMask(spents, mask, csvWriter):
@@ -223,7 +228,7 @@ def PrintSpents(spents, filename):
   csvWriter.writerow(['customer', 'supplier', 'amount', 'date', 'region', 'type'])
   
   #  TODO(vyakunin): aggregate per date, region, type, customer (9999.12.31)
-  for mask in range(1 << 5): #  TODO(vyakunin): palevo
+  for mask in range(1 << 6): #  TODO(vyakunin): palevo
     a = BuildMask(mask)
     # For the time of being we need just several aggregations:
     # * customers
@@ -231,6 +236,7 @@ def PrintSpents(spents, filename):
     # * spent types
     # * regions
     # * region x date
+    # * region x year TODO(vertix): validate this
     # * region x customer
     # * region x supplier
     # * region x type
@@ -242,6 +248,7 @@ def PrintSpents(spents, filename):
         IsMaskLikeThis(a, SUPPLIER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX) or
         IsMaskLikeThis(a, TYPE_MASK_INDEX) or
+        IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, CUSTOMER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, SUPPLIER_MASK_INDEX) or
