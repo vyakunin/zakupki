@@ -36,7 +36,7 @@ function drawTable() {
     formatter.format(data, 1); // Apply formatter to second column
 
     var table = new google.visualization.Table(document.getElementById('top_suppliers'));
-    table.draw(data, {showRowNumber: true});
+    table.draw(data, {showRowNumber: true, allowHtml: true});
   }
   {
     var evalledData = eval("(" + get_json('/expenses?dim=type') + ")");
@@ -51,7 +51,7 @@ function drawTable() {
                       legend: "none",
                       is3D: true});
     var table = new google.visualization.Table(document.getElementById('categories_table'));
-    table.draw(data, {showRowNumber: true});
+    table.draw(data, {showRowNumber: true, allowHtml: true});
   }
   {
     var evalledData = eval("(" + get_json('/time_chart.json') + ")");
