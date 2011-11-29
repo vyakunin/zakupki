@@ -29,7 +29,7 @@
       formatter.format(data, 1); // Apply formatter to second column
       
       var table = new google.visualization.Table(document.getElementById('suppliers_table'));
-      table.draw(data, {showRowNumber: true});
+      table.draw(data, {showRowNumber: true, allowHtml: true});
       // 
       // 
       // table.draw(data, {allowHtml: true, showRowNumber: true});
@@ -60,7 +60,7 @@
                         legend: "none",
                         is3D: true});
       var table = new google.visualization.Table(document.getElementById('categories_table'));
-      table.draw(data, {showRowNumber: true});
+      table.draw(data, {showRowNumber: true, allowHtml: true});
       
     }
   }
