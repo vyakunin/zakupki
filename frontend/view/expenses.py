@@ -66,7 +66,7 @@ class ExpensesView(webapp.RequestHandler):
                                   if record.type != model.AGGREGATE_TYPE]}))
     elif dim == 'region':
       region_values = [{'key': record.region,
-                        'name': region_util.names[record.region],
+                        'name': region_util.names.get(record.region, 'Не определено'),
                         'value': record.amount}
                        for record in query
                        if record.region != model.AGGREGATE_REGION]

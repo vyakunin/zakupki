@@ -37,7 +37,7 @@ class TimeChartView(webapp.RequestHandler):
     """Renders JSON for bar chart
     """    
     query = model.Expense.all()
-    
+
     if self.request.get('supplier'):
       query.filter('supplier = ', db.Key.from_path('Supplier', self.request.get('supplier')))
     else:
