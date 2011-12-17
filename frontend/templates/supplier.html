@@ -30,7 +30,7 @@ function drawCharts() {
 {% block content %}
 <h2 class="center_title">{{supplier.organization_name|safe}}</h2>
 <div>
-<ul>
+<ul class="cb">
   <li> ИНН: {{supplier.inn}}</li>
   {% if supplier.kpp %}
   <li> КПП: {{supplier.kpp}}</li>
