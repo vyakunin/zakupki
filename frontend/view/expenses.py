@@ -73,7 +73,7 @@ def BuildPathAndTemplateValues(request):
                     if record.type != model.AGGREGATE_TYPE]})
   elif dim == 'region':
     region_values = [{'key': record.region,
-                      'name': region_util.names[record.region],
+                      'name': region_util.names.get(record.region, 'Unknown region'),
                       'value': record.amount}
                      for record in query
                      if record.region != model.AGGREGATE_REGION]

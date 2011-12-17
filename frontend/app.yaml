@@ -16,9 +16,20 @@ handlers:
   script: $PYTHON_LIB/google/appengine/ext/datastore_admin/main.py
   login: admin
 
+- url: /admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
+
 - url: /.*
   script: app.app
 
 builtins:
 - remote_api: on
 - datastore_admin: on
+
+admin_console:
+  pages:
+  - name: My Console
+    url: /admin/interactive
+  - name: My Memcache
+    url: /admin/memcache
