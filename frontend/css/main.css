@@ -5,6 +5,63 @@ body {
   width: 100%;
   font-family: Arial, Verdana, Helvetica, sans-serif;
   font-size: 12px;
+  background-color: #eee;
+}
+
+.main_wrapper { 
+  width: 960px; 
+  margin: 15px auto;
+  background-color: white;
+  -webkit-box-shadow: 0 2px 6px #888;
+  -moz-box-shadow: 0 2px 6px #888;
+  overflow: hidden;
+}
+
+.inner_title_wrapper { 
+  width: 100%;
+  padding: 1em;
+}
+.inner_title_wrapper span { 
+  color: black;
+  font-family: Arial, Verdana, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 30pt;
+  text-shadow: gray 1px 1px 1px;
+}
+.inner_title_wrapper a { text-decoration: none; }
+
+div.menu_bar {
+  clear: both;
+  float: left;
+  width: 100%;
+  overflow: hidden;
+}
+div.menu_bar ul {
+  padding: 2em 0 0 3em;
+  margin: 0 auto;
+  list-style-type: none;
+  float: left;
+}
+div.menu_bar li {
+  float: left;
+  padding: 0.5em 1em;
+  margin: 0 0.5em 0;
+  font-size: 12pt;
+  font-weight: bold;
+  color: white;
+  text-shadow: gray 1px 1px 1px;
+}
+div.menu_bar li.selected {
+  background-color: white;
+  border-top: 1px solid gray;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  color: black;
+  text-shadow: none;
+}
+div.menu_bar li a {
+  text-decoration: none;
+  color: inherit;
 }
 
 a { outline: none;}
@@ -22,22 +79,6 @@ h1, h2, h3, h4 {
 h2 { font-size: 18px; font-weight: bold }
 
 .cb { clear: both;}
-
-.main_wrapper { width: 960px; margin: 0 auto; overflow: hidden;}
-
-.inner_title_wrapper { width: 100%; float: left; height: 40px; line-height: 40px;  margin-top: 20px;}
-.inner_title_wrapper span { 
-  float: left;
-  color: white;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  font-size: 18px;
-  margin: 0 0 0 15px;
-  text-shadow: black 1px 1px 6px;
-}
-.inner_title_wrapper a { text-decoration: none; }
-.inner_title_wrapper a:hover { text-decoration: underline; color: white; }
-
 
 .blue_bg_inner { 
   background: #4abcec; /* for non-css3 browsers */ 
@@ -61,7 +102,12 @@ h2 { font-size: 18px; font-weight: bold }
   font-family: "Tahoma";
   padding: 25px 0 25px;
 }
-.copyright_1 { float: left; text-transform: uppercase; padding-right: 10px; width: 250px;}
+.copyright_1 { 
+  float: left; 
+  text-transform: uppercase; 
+  padding-left: 10px; 
+  width: 250px;
+}
 
 .table_wrapper { margin-bottom: 20px; }
 .table_wrapper h2 { color: #00a9e0; font-size: 12px; line-height: 15px; text-transform: uppercase; margin-bottom: 3px; }
