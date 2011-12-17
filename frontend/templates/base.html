@@ -20,14 +20,14 @@
   };
   function drawTypesPieChart(divId, data) {
     var chart = new google.visualization.PieChart(document.getElementById(divId));
-    chart.draw(data, {width: 400, height: 400,
+    chart.draw(data, {height: 280,
                       chartArea: {top: 20, height: "80%"},
                       legend: "none",
                       is3D: true});    
   };
   function drawTimeChart(divId, data) {
-    var chart = new google.visualization.ColumnChart(document.getElementById(divId));
-    chart.draw(data, {height: 500, title: 'Закупки'});
+    var chart = new google.visualization.LineChart(document.getElementById(divId));
+    chart.draw(data, {});
   };
   </script>
 
@@ -51,7 +51,7 @@
 <div class="main_wrapper">
     <!-- inner title -->
 	<div class="inner_title_wrapper blue_bg_inner">
-	  <span>RusZakupki.org</span>
+	  <a href="/"><span>РусЗакупки</span></a>
 	</div>
     <div class="content_wrapper">
     	<div class="content_wide">
