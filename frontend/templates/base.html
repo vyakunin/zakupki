@@ -8,19 +8,18 @@
 
 <script type='text/javascript' src='https://www.google.com/jsapi'></script>
 <script type='text/javascript'>
-  // ------------ jquery start  --------------- //
-  google.load("jquery", "1.6.4");
-   
-  function get_json(myUrl) {
-    return $.ajax({
-      url: myUrl,
-      dataType: 'json', 
-      async:false,
-    }).responseText;
-  } 
-  // ------------ jquery start  --------------- // 
+  google.load("jquery", "1.7.1");
+
+  function sumJSON2DataTable(sourceJson) {
+    var data = new google.visualization.DataTable(sourceJson);
+
+    var formatter = new google.visualization.NumberFormat(
+        {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
+    formatter.format(data, 1); // Apply formatter to second column
+    return data;
+  };
   </script>
-   
+
   {% block inner_scripts %}
   {% endblock %}
   <script type="text/javascript">
@@ -41,7 +40,7 @@
 <div class="main_wrapper">
     <!-- logo and navy -->
 	<div class="header_wrapper">
-        
+
         <!-- navy -->
     	<div class="main_navy_wrapper">
         	<ul class="top_navy blue_bg_2">
@@ -51,11 +50,11 @@
  			</ul>
         </div>
         <!-- / navy -->
-        
+
     	<div class="cb"></div>
     </div>
     <!-- / logo and navy -->
-    
+
     <!-- inner title -->
 	<div class="inner_title_wrapper blue_bg_inner">
 	  <span>RusZakupki.org</span>
@@ -63,10 +62,10 @@
     <!-- / inner title -->
     <!-- content -->
     <div class="content_wrapper">
-    	<div class="content_wide">            
+    	<div class="content_wide">
              <!-- data -->
         	   <div class="data_wrapper">
-    
+
     {% block content %}
     {% endblock %}
             </div>
@@ -82,10 +81,8 @@
     	<div class="cb"></div>
     </div>
     <!-- / footer -->
-    
+
 	<div class="cb"></div>
 </div>
-<!-- / general content -->
-
 </body>
 </html>
