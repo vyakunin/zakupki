@@ -29,8 +29,16 @@ function drawCharts() {
 {% endblock %}
 {% block content %}
 <h2>{{customer.full_name|safe}}</h2>
-<h3><a
-  rel="nofollow" class="external" target="blank" href="http://zakupki.gov.ru/pgz/public/action/organizations/registry/search?searchStr={{customer.reg_num}}">Регистрационные данные <img></a></h3>
+<ul class="cb">
+  <li>ИНН: {{customer.inn}}</li>
+  <li>КПП: {{customer.kpp}}</li>
+  <li><a rel="nofollow"
+         class="external"
+         target="blank"
+         href="http://zakupki.gov.ru/pgz/public/action/organizations/registry/search?searchStr={{customer.reg_num}}">
+       Регистрационные данные <img>
+  </a></li>
+</ul>
 <div class="table_wrapper">
   <h2>Закупки по категориям</h2>
     <div class="cb"></div>
@@ -46,7 +54,7 @@ function drawCharts() {
   </table>
   <!-- <div class="cb"></div> -->
   <div class="table_wrapper">
-    <h2>Закупке по дате заключения контракта</h2>
+    <h2>Закупки по дате заключения контракта</h2>
     <div class="cb"></div>
     <div id="months_bar_chart"></div>
     <div class="cb"></div>
