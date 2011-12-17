@@ -66,6 +66,7 @@ class XmlImporter(object):
     date = date[:-2] + '01'
     if date[:4] < '2007':
       print 'Dropping expense older than 2007 year (%s)' % date[:4]
+      return []
     price = expense.xpath('number(./oos:price)', namespaces=XmlImporter.namespaces)
     currencyCode = expense.xpath('string(./oos:currency/oos:code)', namespaces=XmlImporter.namespaces)
     if currencyCode != 'RUB':
