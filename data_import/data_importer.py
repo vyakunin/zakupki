@@ -209,9 +209,9 @@ def PrintAggregatedForMask(spents, mask, csvWriter):
     else:
       aggregatedSpents[key] = spent['amount']
   for key, value in aggregatedSpents.iteritems():
-    row = list(key[0:2]) # customer, supplier
+    row = [k.encode('utf-8') for k in key[0:2]] # customer, supplier
     row.append(value) # amount
-    row.extend(list(key[2:])) # date, region, type
+    row.extend([k.encode('utf-8') for k in key[2:]]) # date, region, type
     csvWriter.writerow(row)
 
 def IsMaskLikeThis(mask, *args):
@@ -249,15 +249,16 @@ def PrintSpents(spents, filename):
         IsMaskLikeThis(a, SUPPLIER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX) or
         IsMaskLikeThis(a, TYPE_MASK_INDEX) or
+        IsMaskLikeThis(a, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, CUSTOMER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, SUPPLIER_MASK_INDEX) or
         IsMaskLikeThis(a, REGION_MASK_INDEX, TYPE_MASK_INDEX) or
         IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, TYPE_MASK_INDEX) or
-        IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, DATE_MASK_INDEX) or
+        IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
         IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, TYPE_MASK_INDEX) or
-        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, DATE_MASK_INDEX)):
+        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX)):
       PrintAggregatedForMask(spents, a, csvWriter)
   
 def PrintCustomers(customers, filename):
@@ -326,7 +327,7 @@ def main():
     for filename in filenames:
       if filename.startswith('contract'):
         filename = os.path.join(dirname, filename)
-        assert zipfile.is_zipfile(filename)
+        assert zipfile.is_zipfile(filename), filename
         myZip = zipfile.ZipFile(filename, "r")
         for name in myZip.namelist():
           myZip.extract(name, tmpdir)

@@ -37,7 +37,7 @@ class TimeChartView(webapp.RequestHandler):
     """Renders JSON for bar chart
     """    
     query = model.Expense.all()
-    
+
     if self.request.get('supplier'):
       query.filter('supplier = ', db.Key.from_path('Supplier', self.request.get('supplier')))
     else:
@@ -61,7 +61,8 @@ class TimeChartView(webapp.RequestHandler):
     template_records = []
     last_date = None
     for record in query:
-      if record.date >= model.AGGREGATE_DATE.date():
+      if (record.date >= model.AGGREGATE_DATE.date() or 
+          record.date.month == 12 and record.date.day == 31):
         continue
 
       if not last_date:
