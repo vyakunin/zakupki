@@ -36,11 +36,8 @@ function drawCharts() {
               {'dim': 'type'},
               function(sourceData) {
                 var data = sumJSON2DataTable(sourceData);
-                var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
-                chart.draw(data, {width: 400, height: 400,
-                                  chartArea: {top: 20, height: "80%"},
-                                  legend: "none",
-                                  is3D: true});
+                drawTypesPieChart('categories_chart', data);
+
                 var table = new google.visualization.Table(document.getElementById('categories_table'));
                 table.draw(data, {showRowNumber: true, allowHtml: true});
               });
@@ -48,8 +45,7 @@ function drawCharts() {
   {
     $.getJSON('/time_chart.json',
               function(sourceData) {
-                var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
-                chart.draw(sumJSON2DataTable(sourceData), {width: 800, height: 500, title: 'Закупки'});
+                drawTimeChart('months_bar_chart', sumJSON2DataTable(sourceData));
               });
   }
 }
@@ -91,7 +87,7 @@ function drawCharts() {
       </td>
     </tr>
   </table>
-    <div class="cb"></div>
+  <div class="cb"></div>
 </div>
 <div class="table_wrapper">
   <h2>Закупки по дате заключения контракта</h2>
