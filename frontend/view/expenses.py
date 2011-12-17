@@ -10,7 +10,9 @@ import collections
 import json
 import logging
 import os
+import StringIO
 
+from google.appengine.api import memcache
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -18,7 +20,7 @@ from util import product_util
 from util import region_util
 import model
 
-
+_MEMCACHE_TIMEOUT = 60*60*12  # 12 hours
 EXPENSES_LIMIT = 20
 
 # Maps dimension to relative table column label.
@@ -59,7 +61,6 @@ RECORD_TO_TITLE = {
     'region': RegionTitle,
     'type': TypeTitle
 }
-
 # Maps property to their relative aggregated value.
 DIM_TO_AGGREGATED_VALUE = {
     'supplier': model.Supplier.Aggregated().key(),
@@ -69,51 +70,79 @@ DIM_TO_AGGREGATED_VALUE = {
 }
 
 
+def BuildResult(request):
+  query = model.Expense.all()
+
+  dim = request.get('dim')
+  if dim != 'supplier':
+    if request.get('supplier'):
+      query.filter('supplier =  ', db.Key.from_path('Supplier', request.get('supplier')))
+    else:
+      query.filter('supplier =  ', model.Supplier.Aggregated())
+
+  if dim != 'customer':
+    if request.get('customer'):
+      query.filter('customer =  ', db.Key.from_path('Customer', request.get('customer')))
+    else:
+      query.filter('customer =  ', model.Customer.Aggregated())
+
+  if dim != 'region':
+    if not request.get('region'):
+      query.filter('region = ', model.AGGREGATE_REGION)
+    else:
+      query.filter('region = ', request.get('region'))
+
+  if dim != 'type':
+    if not request.get('type'):
+      query.filter('type = ', model.AGGREGATE_TYPE)
+    else:
+      query.filter('type = ', request.get('type'))
+
+  query.filter('date = ', model.AGGREGATE_DATE).order('-amount')
+
+  if dim in ['supplier', 'customer']:
+    query = query.fetch(EXPENSES_LIMIT)
+
+  async_records = [(RECORD_TO_TITLE[dim](r), r.amount)
+                   for r in query
+                   if model.Expense.properties()[dim].get_value_for_datastore(r) != DIM_TO_AGGREGATED_VALUE[dim]]
+  return json.dumps(
+      {'cols': [{'id': dim, 'label': DIM_TO_LABEL[dim], 'type': 'string'},
+                {'id': 'sum', 'label': 'Сумма', 'type': 'number'}],
+       'rows': [{'c': [{'v': rec[0]()},
+                       {'v': rec[1]}]}
+                for rec in async_records]})
+
+
+def BuildMemcacheKey(request):
+  dim = request.get('dim')
+  request_description = 'dim: ' + dim
+  # we build key 'param1: v1, param2: v2' and so on.
+  # We are not escaping values yet, should think about it.
+  request_parameters = ['supplier', 'customer', 'region', 'type']
+  for param in request_parameters:
+    value = request.get(param)
+    if (value):
+      request_description += ', %s: %s' % (param, value)
+
+  return request_description
+
+
+def FindOrBuildResult(request):
+  memcache_key = BuildMemcacheKey(request)
+  path_and_template_values = memcache.get(memcache_key)
+  if path_and_template_values is not None:
+    return path_and_template_values
+  path_and_template_values = BuildResult(request)
+  memcache.set(memcache_key, path_and_template_values, _MEMCACHE_TIMEOUT)
+  return path_and_template_values
+
+
 class ExpensesView(webapp.RequestHandler):
   def get(self):
-    """Renders JSON for pie chart.
+    """Renders JSON for different charts.
     """
-    query = model.Expense.all()
-
-    dim = self.request.get('dim')
-    if dim != 'supplier':
-      if self.request.get('supplier'):
-        query.filter('supplier =  ', db.Key.from_path('Supplier', self.request.get('supplier')))
-      else:
-        query.filter('supplier =  ', model.Supplier.Aggregated())
-
-    if dim != 'customer':
-      if self.request.get('customer'):
-        query.filter('customer =  ', db.Key.from_path('Customer', self.request.get('customer')))
-      else:
-        query.filter('customer =  ', model.Customer.Aggregated())
-
-    if dim != 'region':
-      if not self.request.get('region'):
-        query.filter('region = ', model.AGGREGATE_REGION)
-      else:
-        query.filter('region = ', self.request.get('region'))
-
-    if dim != 'type':
-      if not self.request.get('type'):
-        query.filter('type = ', model.AGGREGATE_TYPE)
-      else:
-        query.filter('type = ', self.request.get('type'))
-
-    query.filter('date = ', model.AGGREGATE_DATE).order('-amount')
-
-    if dim in ['supplier', 'customer']:
-      query = query.fetch(EXPENSES_LIMIT)
+    result = FindOrBuildResult(self.request)
 
     self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-    async_records = [(RECORD_TO_TITLE[dim](r), r.amount)
-                     for r in query
-                     if model.Expense.properties()[dim].get_value_for_datastore(r) != DIM_TO_AGGREGATED_VALUE[dim]]
-    json.dump(
-        {'cols': [{'id': dim, 'label': DIM_TO_LABEL[dim], 'type': 'string'},
-                  {'id': 'sum', 'label': 'Сумма', 'type': 'number'}],
-         'rows': [{'c': [{'v': rec[0]()},
-                         {'v': rec[1]}]}
-                  for rec in async_records]},
-        self.response.out,
-        ensure_ascii=False)
+    self.response.out.write(result)
