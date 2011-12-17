@@ -61,7 +61,8 @@ class TimeChartView(webapp.RequestHandler):
     template_records = []
     last_date = None
     for record in query:
-      if record.date >= model.AGGREGATE_DATE.date():
+      if (record.date >= model.AGGREGATE_DATE.date() or 
+          record.date.month == 12 and record.date.day == 31):
         continue
 
       if not last_date:
