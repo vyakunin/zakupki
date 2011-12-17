@@ -1,9 +1,0 @@
-{
- "cols": [{"id": "month", "label": "Месяц", "type": "string"},
-          {"id": "sum", "label": "Сумма", "type": "number"}],
- "rows": [
-  {% for record in records %}
-    {"c":[{"v": "{{record.month}}"}, {"v": {{record.value}} }]},
-  {%endfor%}
-  ]
-}

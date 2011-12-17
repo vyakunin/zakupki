@@ -9,6 +9,7 @@ All rights reserved.
 
 import collections
 import datetime
+import json
 import logging
 import os
 
@@ -32,10 +33,25 @@ def GetNextMonth(date):
     return datetime.date(date.year, date.month +1, date.day)
 
 
+MONTHS = {
+   1: 'Январь',
+   2: 'Февраль',
+   3: 'Март',
+   4: 'Апрель',
+   5: 'Май',
+   6: 'Июнь',
+   7: 'Июль',
+   8: 'Август',
+   9: 'Сентябрь',
+   10: 'Октябрь',
+   11: 'Ноябрь',
+   12: 'Декабрь',
+}
+
 class TimeChartView(webapp.RequestHandler):
   def get(self):
     """Renders JSON for bar chart
-    """    
+    """
     query = model.Expense.all()
 
     if self.request.get('supplier'):
@@ -48,11 +64,14 @@ class TimeChartView(webapp.RequestHandler):
     else:
       query.filter('customer =  ', model.Customer.Aggregated())
 
-    query.filter('type = ', model.AGGREGATE_TYPE)
+    if self.request.get('type'):
+      query.filter('type = ', self.request.get('type'))
+    else:
+      query.filter('type = ', model.AGGREGATE_TYPE)
 
-    if self.request.get('code'):
-      query.filter('region = ', self.request.get('code'))
-    else:      
+    if self.request.get('region'):
+      query.filter('region = ', self.request.get('region'))
+    else:
       query.filter('region = ', model.AGGREGATE_REGION)
 
     query.order('date')
@@ -61,7 +80,7 @@ class TimeChartView(webapp.RequestHandler):
     template_records = []
     last_date = None
     for record in query:
-      if (record.date >= model.AGGREGATE_DATE.date() or 
+      if (record.date >= model.AGGREGATE_DATE.date() or
           record.date.month == 12 and record.date.day == 31):
         continue
 
@@ -71,16 +90,21 @@ class TimeChartView(webapp.RequestHandler):
       else:
         while not IsPreviousMonth(record.date, last_date):
           last_date = GetNextMonth(last_date)
-          template_records.append({'month' :last_date.strftime('%b %y'),
+          template_records.append({'month': '%s %s' % (MONTHS[last_date.month], last_date.year),
                                    'value': 0.0})
 
         last_date = record.date
         value = record.amount
 
-      template_records.append({'month' :last_date.strftime('%b %y'),
+      template_records.append({'month': '%s %s' % (MONTHS[last_date.month], last_date.year),
                                'value': value})
 
     self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-    path = os.path.join(os.path.dirname(__file__), '../templates/time_chart.json')
-    self.response.out.write(template.render(path,
-                                            {'records': template_records}))
+    json.dump(
+        {'cols': [{'id': 'month', 'label': 'Месяц', 'type': 'string'},
+                  {'id': 'sum', 'label': 'Сумма', 'type': 'number'}],
+         'rows': [{'c': [{'v': r['month']}, {'v': r['value']}]}
+                  for r in template_records]
+        },
+        self.response.out,
+        ensure_ascii=False)

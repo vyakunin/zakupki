@@ -1,9 +1,0 @@
-{
-    "cols": [{"id": "region", "label": "Продавец", "type": "string"},
-            {"id": "sum", "label": "Сумма", "type": "number"}],
-    "rows": [
-  {% for record in records %}
-    {"c":[{"v": '<a href="/supplier?id={{record.supplier.key.name}}">{{record.supplier.organization_name|safe}}</a>'}, {"v": {{record.value}}}]},
-  {% endfor %}
-  ]
-}

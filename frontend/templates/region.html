@@ -4,105 +4,89 @@
 <script type='text/javascript'>
   google.load('visualization', '1', {packages:['table']});
   google.load('visualization', '1', {packages:['corechart']});
-  google.setOnLoadCallback(drawTable);
-  function drawTable() {  
-    
+  google.setOnLoadCallback(drawCharts);
+  function drawCharts() {
     {
-      var evalledData = eval("(" + get_json('/expenses?region={{region_code}}&dim=customer') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-      
-      var table = new google.visualization.Table(document.getElementById('customers_table'));
-      table.draw(data, {showRowNumber: true, allowHtml: true});
-      // 
-      // 
-      // table.draw(data, {allowHtml: true, showRowNumber: true});
+      $.getJSON('/expenses',
+                {'region': '{{region_code}}',
+                 'dim': 'customer'},
+                function(sourceData) {
+                  var table = new google.visualization.Table(document.getElementById('customers_table'));
+                  table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
+                });
     }
-
     {
-      var evalledData = eval("(" + get_json('/expenses?region={{region_code}}&dim=supplier') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-      
-      var table = new google.visualization.Table(document.getElementById('suppliers_table'));
-      table.draw(data, {showRowNumber: true, allowHtml: true});
-      // 
-      // 
-      // table.draw(data, {allowHtml: true, showRowNumber: true});
+      $.getJSON('/expenses',
+                {'region': '{{region_code}}',
+                 'dim': 'supplier'},
+                function(sourceData) {
+                  var table = new google.visualization.Table(document.getElementById('suppliers_table'));
+                  table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
+                });
     }
-
     {
-      var evalledData = eval("(" + get_json('/time_chart.json?code={{region_code}}') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-
-      var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
-      chart.draw(data, {width: 800, height: 500, title: 'Закупки'
-          //hAxis: {title: 'Year', titleTextStyle: {color: 'red'}}
-      });
+      $.getJSON('/expenses',
+                {'region': '{{region_code}}',
+                 'dim': 'type'},
+                function(sourceData) {
+                  var data = sumJSON2DataTable(sourceData);
+                  var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
+                  chart.draw(data, {width: 400, height: 400,
+                                    chartArea: {top: 20, height: "80%"},
+                                    legend: "none",
+                                    is3D: true});
+                  var table = new google.visualization.Table(document.getElementById('categories_table'));
+                  table.draw(data, {showRowNumber: true, allowHtml: true});
+                });
     }
-    
     {
-      var evalledData = eval("(" + get_json('/expenses?region={{region_code}}&dim=type') + ")");
-      var data = new google.visualization.DataTable(evalledData);
-      var formatter = new google.visualization.NumberFormat(
-          {suffix: ' руб', negativeParens: true, fractionDigits: 0, groupingSymbol: ' '});
-      formatter.format(data, 1); // Apply formatter to second column
-      var chart = new google.visualization.PieChart(document.getElementById('categories_chart'));
-      chart.draw(data, {width: 400, height: 400,
-                        chartArea: {top: 20, height: "80%"},
-                        legend: "none",
-                        is3D: true});
-      var table = new google.visualization.Table(document.getElementById('categories_table'));
-      table.draw(data, {showRowNumber: true, allowHtml: true});
-      
+      $.getJSON('/time_chart.json',
+                {'region': '{{region_code}}'},
+                function(sourceData) {
+                  var chart = new google.visualization.ColumnChart(document.getElementById('months_bar_chart'));
+                  chart.draw(sumJSON2DataTable(sourceData), {width: 800, height: 500, title: 'Закупки'});
+                });
     }
   }
 </script>
 {% endblock %}
 {% block content %}
-<h2 class="center_title">{{region_name}}</h2> 
-    
-<div class="table_wrapper">  
-    <h2>Top закупщики региона</h2>      
+<h2 class="center_title">{{region_name}}</h2>
+
+<div class="table_wrapper">
+    <h2>Top закупщики региона</h2>
     <div class="cb"></div>
      <div id="customers_table"></div>
-    <div class="cb"></div>    
-</div> 
+    <div class="cb"></div>
+</div>
 
-<div class="table_wrapper">  
-    <h2>Top продавцы региона</h2>      
+<div class="table_wrapper">
+    <h2>Top продавцы региона</h2>
     <div class="cb"></div>
      <div id="suppliers_table"></div>
-    <div class="cb"></div>    
-</div> 
+    <div class="cb"></div>
+</div>
 
-<div class="table_wrapper">  
+<div class="table_wrapper">
   <h2>Закупки по категориям</h2>
     <div class="cb"></div>
   <table>
     <tr>
       <td style="vertical-align: top;">
-        <div id="categories_chart"></div>                          
+        <div id="categories_chart"></div>
       </td>
       <td style="vertical-align: top;">
         <div id="categories_table"></div>
       </td>
     </tr>
-  </table>                
+  </table>
     <div class="cb"></div>
-</div> 
-<div class="table_wrapper">  
-  <h2>Закупке по дате заключения контракта</h2>      
+</div>
+<div class="table_wrapper">
+  <h2>Закупке по дате заключения контракта</h2>
   <div class="cb"></div>
   <div id="months_bar_chart"></div>
   <div class="cb"></div>
-</div> 
+</div>
 <!-- / content -->
 {% endblock %}

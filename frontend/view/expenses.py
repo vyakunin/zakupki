@@ -7,6 +7,7 @@ Copyright (c) 2011 All its authors.
 All rights reserved.
 """
 import collections
+import json
 import logging
 import os
 
@@ -19,6 +20,53 @@ import model
 
 
 EXPENSES_LIMIT = 20
+
+# Maps dimension to relative table column label.
+DIM_TO_LABEL = {
+    'supplier': 'Поставщик',
+    'customer': 'Покупатель',
+    'region': 'Регион',
+    'type': 'Категория'
+}
+
+def SupplierTitle(record):
+  key = model.Expense.supplier.get_value_for_datastore(record)
+  future = db.get_async(key)
+  def AsyncResult():
+    return '<a href="/supplier?id=%s">%s</a>' % (
+        key.name(), future.get_result().organization_name)
+  return AsyncResult
+
+def CustomerTitle(record):
+  key = model.Expense.customer.get_value_for_datastore(record)
+  future = db.get_async(key)
+  def AsyncResult():
+    return '<a href="/customer?id=%s">%s</a>' % (
+        key.name(), future.get_result().full_name)
+  return AsyncResult
+
+def RegionTitle(record):
+  return lambda: '<a href="/region?code=%s">%s</a>' % (
+      record.region, region_util.names.get(record.region, '??'))
+
+def TypeTitle(record):
+  return lambda: product_util.ProductCategory.NameByCode(record.type)
+
+# Callables returning row's name by a record.
+RECORD_TO_TITLE = {
+    'supplier': SupplierTitle,
+    'customer': CustomerTitle,
+    'region': RegionTitle,
+    'type': TypeTitle
+}
+
+# Maps property to their relative aggregated value.
+DIM_TO_AGGREGATED_VALUE = {
+    'supplier': model.Supplier.Aggregated().key(),
+    'customer': model.Customer.Aggregated().key(),
+    'region': model.AGGREGATE_REGION,
+    'type': model.AGGREGATE_TYPE
+}
 
 
 class ExpensesView(webapp.RequestHandler):
@@ -54,41 +102,18 @@ class ExpensesView(webapp.RequestHandler):
 
     query.filter('date = ', model.AGGREGATE_DATE).order('-amount')
 
+    if dim in ['supplier', 'customer']:
+      query = query.fetch(EXPENSES_LIMIT)
+
     self.response.headers['Content-Type'] = 'application/json;charset=utf-8'
-
-    if dim == 'type':
-      path = os.path.join(os.path.dirname(__file__), '../templates/types.json')
-      self.response.out.write(
-          template.render(path, {'records':
-                                 [{'category': product_util.ProductCategory.NameByCode(record.type),
-                                   'value': record.amount}
-                                  for record in query
-                                  if record.type != model.AGGREGATE_TYPE]}))
-    elif dim == 'region':
-      region_values = [{'key': record.region,
-                        'name': region_util.names.get(record.region, 'Не определено'),
-                        'value': record.amount}
-                       for record in query
-                       if record.region != model.AGGREGATE_REGION]
-      path = os.path.join(os.path.dirname(__file__), '../templates/regions.json')
-      self.response.out.write(template.render(path,
-                                              {'records': region_values}))
-    elif dim == 'supplier':
-      supplier_data = collections.defaultdict(lambda: 0.0)
-
-      template_values = {'records':
-              [{'supplier': record.supplier, 'value': record.amount}
-               for record in query.fetch(EXPENSES_LIMIT + 1)
-               if model.Expense.supplier.get_value_for_datastore(record) != model.Supplier.Aggregated().key()]
-             }
-      path = os.path.join(os.path.dirname(__file__), '../templates/suppliers.json')
-      self.response.out.write(template.render(path, template_values))
-    elif dim == 'customer':
-      customer_data = collections.defaultdict(lambda: 0.0)
-      template_values = {'records':
-              [{'customer': record.customer, 'value': record.amount}
-               for record in query.fetch(EXPENSES_LIMIT + 1)
-               if model.Expense.customer.get_value_for_datastore(record) != model.Customer.Aggregated().key()]
-             }
-      path = os.path.join(os.path.dirname(__file__), '../templates/customers.json')
-      self.response.out.write(template.render(path, template_values))
+    async_records = [(RECORD_TO_TITLE[dim](r), r.amount)
+                     for r in query
+                     if model.Expense.properties()[dim].get_value_for_datastore(r) != DIM_TO_AGGREGATED_VALUE[dim]]
+    json.dump(
+        {'cols': [{'id': dim, 'label': DIM_TO_LABEL[dim], 'type': 'string'},
+                  {'id': 'sum', 'label': 'Сумма', 'type': 'number'}],
+         'rows': [{'c': [{'v': rec[0]()},
+                         {'v': rec[1]}]}
+                  for rec in async_records]},
+        self.response.out,
+        ensure_ascii=False)
