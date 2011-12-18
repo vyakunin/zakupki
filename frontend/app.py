@@ -22,6 +22,7 @@ app = webapp2.WSGIApplication(
      ('/regions', regions.RegionsView),
      ('/region', regions.RegionView),
      ('/time_chart', time_chart.TimeChartView),
+     ('/customers', customers.CustomersView),
      ('/customer', customers.CustomerView),
      ('/supplier', suppliers.SupplierView),
      ('/expenses', expenses.ExpensesView),

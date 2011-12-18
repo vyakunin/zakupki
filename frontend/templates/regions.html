@@ -18,7 +18,7 @@ function drawCharts() {
 {% block regions-selected %}selected{% endblock %}
 {% block content %}
 <p>
-  Расходы с <span class="actuality-date">1 января 2007</span> по <span class="actuality-date">{{config.actuality_date}}</span>,
+  Расходы с <span class="actuality-date">{{config.start_date}}</span> по <span class="actuality-date">{{config.actuality_date}}</span>,
   суммированые по регионам РФ.
 <p>
 <div class="table_wrapper">
