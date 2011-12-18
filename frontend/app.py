@@ -24,6 +24,7 @@ app = webapp2.WSGIApplication(
      ('/time_chart', time_chart.TimeChartView),
      ('/customers', customers.CustomersView),
      ('/customer', customers.CustomerView),
+     ('/suppliers', suppliers.SuppliersView),
      ('/supplier', suppliers.SupplierView),
      ('/expenses', expenses.ExpensesView),
     ],

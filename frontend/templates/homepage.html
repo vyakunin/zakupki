@@ -6,14 +6,6 @@ google.setOnLoadCallback(drawCharts);
 function drawCharts() {
   {
     $.getJSON('/expenses',
-              {'dim': 'supplier'},
-              function(sourceData) {
-                var table = new google.visualization.Table(document.getElementById('top_suppliers'));
-                table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
-              });
-  }
-  {
-    $.getJSON('/expenses',
               {'dim': 'type'},
               function(sourceData) {
                 var data = sumJSON2DataTable(sourceData);
@@ -48,14 +40,6 @@ function drawCharts() {
 <p>
   Актуальность данных: <span class="actuality-date">{{config.actuality_date}}</span>
 </p>
-
-<div class="table_wrapper">
-    <h2>Топ поставщиков</h2>
-    <div class="cb"></div>
-    <div id="top_suppliers"></div>
-    <div class="cb"></div>
-</div>
-
 <div class="table_wrapper">
   <h2>Закупки по категориям</h2>
     <div class="cb"></div>
