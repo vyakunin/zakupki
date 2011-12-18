@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Гос Учреждения{% endblock %}
+{% block inner_scripts %}
+<script type='text/javascript'>
+google.setOnLoadCallback(drawCharts);
+function drawCharts() {
+  {
+    $.getJSON('/expenses',
+              {'dim': 'customer'},
+              function(sourceData) {
+                var table = new google.visualization.Table(document.getElementById('top_customers'));
+                table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
+              });
+  }
+}
+</script>
+{% endblock %}
+{% block customers-selected %}selected{% endblock %}
+{% block content %}
+<p>
+  Самые крупные расходователи госудраственных средств за период с <span class="actuality-date">{{config.start_date}}</span> по <span class="actuality-date">{{config.actuality_date}}</span>.
+<p>
+<div class="table_wrapper">
+    <div class="cb"></div>
+    <div id="top_customers"></div>
+    <div class="cb"></div>
+</div>
+{% endblock %}
