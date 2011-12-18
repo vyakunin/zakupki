@@ -15,6 +15,7 @@ from view import expenses
 from view import regions
 from view import suppliers
 from view import time_chart
+from view import types
 
 
 app = webapp2.WSGIApplication(
@@ -26,6 +27,7 @@ app = webapp2.WSGIApplication(
      ('/customer', customers.CustomerView),
      ('/suppliers', suppliers.SuppliersView),
      ('/supplier', suppliers.SupplierView),
+     ('/types', types.TypesView),
      ('/expenses', expenses.ExpensesView),
     ],
     debug=True)
