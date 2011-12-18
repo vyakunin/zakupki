@@ -2,8 +2,6 @@
 {% block title %}{{supplier.organization_name|safe}}{% endblock %}
 {% block inner_scripts %}
 <script type='text/javascript'>
-google.load('visualization', '1', {packages:['table']});
-google.load('visualization', '1', {packages:['corechart']});
 google.setOnLoadCallback(drawCharts);
 function drawCharts() {
   {
@@ -27,6 +25,7 @@ function drawCharts() {
 };
 </script>
 {% endblock %}
+{% block suppliers-selected %}selected{% endblock %}
 {% block content %}
 <h2 class="center_title">{{supplier.organization_name|safe}}</h2>
 <div>

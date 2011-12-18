@@ -17,11 +17,16 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from util import product_util
 from util import region_util
+from view import config
 import model
 
 
-# date format for requests
-DATE_FORMAT = '%Y.%m.%d'
+class RegionsView(webapp.RequestHandler):
+  """Renders view of all the regions"""
+  def get(self):
+    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    path = os.path.join(os.path.dirname(__file__), '../templates/regions.html')
+    self.response.out.write(template.render(path, {'config': config.Config}))
 
 
 class RegionView(webapp.RequestHandler):

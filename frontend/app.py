@@ -19,6 +19,7 @@ from view import time_chart
 
 app = webapp2.WSGIApplication(
     [('/', homepage.HomePageView),
+     ('/regions', regions.RegionsView),
      ('/region', regions.RegionView),
      ('/time_chart', time_chart.TimeChartView),
      ('/customer', customers.CustomerView),
