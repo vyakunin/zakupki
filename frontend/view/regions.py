@@ -15,10 +15,11 @@ import os
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+
+import model
 from util import product_util
 from util import region_util
 from view import config
-import model
 
 
 class RegionsView(webapp.RequestHandler):
@@ -35,7 +36,8 @@ class RegionView(webapp.RequestHandler):
   def GetTemplateValues(self):
     code = self.request.get('code')
     return {'region_name': region_util.names.get(code, 'Unknown'),
-            'region_code': code}
+            'region_code': code,
+            'config': config.Config}
   
   def get(self):
     region = self.request.get('code')
@@ -47,4 +49,3 @@ class RegionView(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), '../templates/region.html')
     self.response.out.write(template.render(path, 
                                             self.GetTemplateValues()))
-    
