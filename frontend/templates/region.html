@@ -2,8 +2,6 @@
 {% block title %}{{region_name}}{% endblock %}
 {% block inner_scripts %}
 <script type='text/javascript'>
-  google.load('visualization', '1', {packages:['table']});
-  google.load('visualization', '1', {packages:['corechart']});
   google.setOnLoadCallback(drawCharts);
   function drawCharts() {
     {
@@ -45,6 +43,7 @@
   }
 </script>
 {% endblock %}
+{% block regions-selected %}selected{% endblock %}
 {% block content %}
 <h2 class="center_title">{{region_name}}</h2>
 

@@ -2,19 +2,16 @@
 {% block title %}Главная{% endblock %}
 {% block inner_scripts %}
 <script type='text/javascript'>
-google.load('visualization', '1', {packages:['table']});
-google.load('visualization', '1', {packages:['corechart']});
-
 google.setOnLoadCallback(drawCharts);
 function drawCharts() {
-  {
-    $.getJSON('/expenses',
-              {'dim': 'region'},
-              function(sourceData) {
-                var table = new google.visualization.Table(document.getElementById('top_regions'));
-                table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
-              });
-  }
+  // {
+  //   $.getJSON('/expenses',
+  //             {'dim': 'region'},
+  //             function(sourceData) {
+  //               var table = new google.visualization.Table(document.getElementById('top_regions'));
+  //               table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
+  //             });
+  // }
   {
     $.getJSON('/expenses',
               {'dim': 'customer'},
@@ -68,12 +65,12 @@ function drawCharts() {
   Актуальность данных: <span class="actuality-date">{{config.actuality_date}}</span>
 </p>
 <!--div id="visual_container"></div-->
-<div class="table_wrapper">
+<!-- <div class="table_wrapper">
     <h2>Регионы</h2>
     <div class="cb"></div>
     <div id="top_regions"></div>
     <div class="cb"></div>
-</div>
+</div> -->
 
 <div class="table_wrapper">
     <h2>Топ покупателей</h2>

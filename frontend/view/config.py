@@ -10,4 +10,4 @@ All rights reserved.
 class Config(object):
   # TODO: invent a better way to deal with this.
   # Probably we may store it in DataStore
-  actuality_date = "29 ноября 2011 г."
+  actuality_date = "29 ноября 2011"

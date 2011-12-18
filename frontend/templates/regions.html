@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Регионы{% endblock %}
+{% block inner_scripts %}
+<script type='text/javascript'>
+google.setOnLoadCallback(drawCharts);
+function drawCharts() {
+  {
+    $.getJSON('/expenses',
+              {'dim': 'region'},
+              function(sourceData) {
+                var table = new google.visualization.Table(document.getElementById('top_regions'));
+                table.draw(sumJSON2DataTable(sourceData), {showRowNumber: true, allowHtml: true});
+              });
+  }
+}
+</script>
+{% endblock %}
+{% block regions-selected %}selected{% endblock %}
+{% block content %}
+<p>
+  Расходы с <span class="actuality-date">1 января 2007</span> по <span class="actuality-date">{{config.actuality_date}}</span>,
+  суммированые по регионам РФ.
+<p>
+<div class="table_wrapper">
+    <div class="cb"></div>
+    <div id="top_regions"></div>
+    <div class="cb"></div>
+</div>
+{% endblock %}
