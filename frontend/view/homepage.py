@@ -15,6 +15,7 @@ from datetime import datetime
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+from view import config
 
 import model
 
@@ -31,4 +32,4 @@ class HomePageView(webapp.RequestHandler):
     """    
     self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
     path = os.path.join(os.path.dirname(__file__), TEMPLATE_PATH)
-    self.response.out.write(template.render(path, {}))
+    self.response.out.write(template.render(path, {'config': config.Config}))

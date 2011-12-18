@@ -18,7 +18,7 @@ function drawCharts() {
               });
   }
   {
-    $.getJSON('/time_chart.json',
+    $.getJSON('/time_chart',
               {'customer': '{{customer.key.name}}'},
               function(sourceData) {
                 drawTimeChart('months_bar_chart', sumJSON2DataTable(sourceData));
