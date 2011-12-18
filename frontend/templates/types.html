@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block inner_scripts %}
+<script type='text/javascript'>
+google.setOnLoadCallback(drawCharts);
+function drawCharts() {
+  $.getJSON('/expenses',
+            {'dim': 'type'},
+            function(sourceData) {
+              var data = sumJSON2DataTable(sourceData);
+              drawTypesPieChart('categories_chart', data);
+
+              var table = new google.visualization.Table(document.getElementById('categories_table'));
+              table.draw(data, {showRowNumber: true, allowHtml: true});
+            });
+}
+</script>
+{% endblock %}
+{% block types-selected %}selected{% endblock %}
+{% block content %}
+<p>
+Суммарный расход госудраственных средств за период с <span class="actuality-date">{{config.start_date}}</span> по <span class="actuality-date">{{config.actuality_date}}</span> в разбивке по видам продукции и услуг (ОКДП).
+<p>
+<div class="table_wrapper">
+  <div class="cb"></div>
+  <table>
+    <tr>
+      <td style="vertical-align: top;">
+        <div id="categories_chart"></div>
+      </td>
+      <td style="vertical-align: top;">
+        <div id="categories_table"></div>
+      </td>
+    </tr>
+  </table>
+  <div class="cb"></div>
+</div>
+{% endblock %}
