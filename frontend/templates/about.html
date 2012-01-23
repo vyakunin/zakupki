@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block inner_scripts %}
+<script type='text/javascript'>
+google.setOnLoadCallback(drawCharts);
+function drawCharts() {
+  $.getJSON('/time_chart',
+            function(sourceData) {
+              drawTimeChart('months_bar_chart', sumJSON2DataTable(sourceData));
+            });
+}
+</script>
+{% endblock %}
+{% block about-selected %}selected{% endblock %}
+{% block content %}
+<p>
+  Проект был создан в рамках марафона <a href="http://code4country.org/about/">Программируй для Страны</a>.
+</p>
+<p>
+  Данные о контрактах, заключенных государственными учреждениями были взяты с FTP сервера <a href="http://zakupki.gov.ru">официального сайта Российской Федерации для размещения информации о размещении заказов</a> (<a href="ftp://free:free@77.246.101.195/">ftp://free:free@77.246.101.195/</a>).
+  Стоит отметить, что использование этого сайта стало обязательным для госучреждений начиная с 2011 года, что означает что данные за предыдущие годы могут включать не все осуществленные расходы.
+</p>
+<p>С замечаниями и предложениями обращайтесь пожалуйста по адресу 
+<script language="javascript">
+var name = "ad" + "min";
+var domain = "rus" + "zakupki" + ".org";
+document.write('<' + 'a href' + '="ma' + 'ilto:' + name + '@' + domain + '">');
+document.write(name + '@' + domain + '</a>');
+</script>
+</p>
+{% endblock %}

@@ -16,6 +16,14 @@ import model
 from view import config
 
 
+class AboutView(webapp.RequestHandler):
+  """Renders homepage."""
+  def get(self):
+    self.response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    path = os.path.join(os.path.dirname(__file__), '../templates/about.html')
+    self.response.out.write(template.render(path, {'config': config.Config}))
+
+
 class HomePageView(webapp.RequestHandler):
   """Renders homepage."""
   def get(self):
