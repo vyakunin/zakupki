@@ -49,6 +49,13 @@
 </head>
 
 <body>
+  <!-- Google Translate Element -->
+  <!-- <div id="google_translate_element" style="display:block"></div><script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({pageLanguage: "ru"}, "google_translate_element");
+  };</script>
+  <script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
+
 <div class="main_wrapper">
     <!-- inner title -->
 	<div class="inner_title_wrapper">
@@ -61,7 +68,7 @@
 	    <li class="{% block customers-selected %}{% endblock %}"><a href="/customers">Гос Учреждения</a></li>
 	    <li class="{% block suppliers-selected %}{% endblock %}"><a href="/suppliers">Поставщики</a></li>
 	    <li class="{% block types-selected %}{% endblock %}"><a href="/types">Категории затрат</a></li>
-	    <li class="{% block about-selected %}{% endblock %}"><a href="/">О проекте</a></li>
+	    <li class="{% block about-selected %}{% endblock %}"><a href="/about">О проекте</a></li>
 	  </ul>
 	</div>
     <div class="content_wide">

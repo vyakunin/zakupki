@@ -29,5 +29,6 @@ app = webapp2.WSGIApplication(
      ('/supplier', suppliers.SupplierView),
      ('/types', types.TypesView),
      ('/expenses', expenses.ExpensesView),
+     ('/about', homepage.AboutView),
     ],
     debug=True)
