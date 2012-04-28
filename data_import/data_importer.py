@@ -153,147 +153,63 @@ class XmlImporter(object):
     if not supplier['inn'] in self.suppliers: #  TODO(vyakunin): is it correct to use inn as key?
       self.suppliers[supplier['inn']] = supplier
 
-CUSTOMER_MASK_INDEX = 0
-SUPPLIER_MASK_INDEX = 1
-DATE_MASK_INDEX = 2
-YEAR_MASK_INDEX = 3
-REGION_MASK_INDEX =  4
-TYPE_MASK_INDEX = 5
+def DumpSpents(writer, spents):
+  for spent in spents:
+    row = [k.encode('utf-8') for k in [spent['customer'], spent['supplier']]]
+    row.append(spent['amount'])
+    row.extend([k.encode('utf-8') for k in [spent['date'], spent['region'], spent['type']]])
+    row.append(spent['regNum'])
+    row.append(spent['publishDate'])
+    writer.writerow(row)
 
-def BuildKey(spent, mask):
-  key = []
-  i = 0
-  if mask[i]: # customer
-    key.append('0')
-  else:
-    key.append(spent['customer'])
-  i += 1
-  if mask[i]: # supplier
-    key.append('0')
-  else:
-    key.append(spent['supplier'])
-  i += 1
-  if mask[i]: #  date
-    key.append('9999-12-31')
-    i += 1 # ignore year aggregating if aggregate by date is on
-  else:
-    i += 1
-    if mask[i]: #year
-      key.append(spent['date'][:4] + '-12-31')
-    else:
-      key.append(spent['date'])
-  i += 1
-  if mask[i]: #region
-    key.append('0')
-  else:
-    key.append(spent['region'])
-  i += 1
-  if mask[i]: # type
-    key.append('0')
-  else:
-    key.append(spent['type'])
-  return tuple(key)
-
-def BuildMask(mask):
-  a = [0, 0, 0, 0, 0, 0]
-  for i in range(6):
-    a[i] = mask & (1 << i)
-  return a
-
-def PrintAggregatedForMask(spents, mask, csvWriter):
-  aggregatedSpents = {}
-  for spent in spents.values():
-    key = BuildKey(spent, mask)
-    if key in aggregatedSpents:
-      aggregatedSpents[key] += spent['amount']
-    else:
-      aggregatedSpents[key] = spent['amount']
-  for key, value in aggregatedSpents.iteritems():
-    row = [k.encode('utf-8') for k in key[0:2]] # customer, supplier
-    row.append(value) # amount
-    row.extend([k.encode('utf-8') for k in key[2:]]) # date, region, type
-    csvWriter.writerow(row)
-
-def IsMaskLikeThis(mask, *args):
-  """Checks whether the mask aggregates by all fields except *args"""
-  not_aggregates = set(args)
-  for i, value in enumerate(mask):
-    # if value is True we do aggregate
-    if (i in not_aggregates) == bool(value):
-      return False
-  return True
-
-def PrintSpents(spents, filename):
-  csvWriter = csv.writer(open(filename, 'wb'), delimiter=',',
-                         quotechar='"', quoting=csv.QUOTE_MINIMAL)
-  csvWriter.writerow(['customer', 'supplier', 'amount', 'date', 'region', 'type'])
-  
-  #  TODO(vyakunin): aggregate per date, region, type, customer (9999.12.31)
-  for mask in range(1 << 6): #  TODO(vyakunin): palevo
-    a = BuildMask(mask)
-    # For the time of being we need just several aggregations:
-    # * customers
-    # * suppliers
-    # * spent types
-    # * regions
-    # * region x date
-    # * region x year TODO(vertix): validate this
-    # * region x customer
-    # * region x supplier
-    # * region x type
-    # * customer x type
-    # * customer x date
-    # * supplier x type
-    # * supplier x date
-    if (IsMaskLikeThis(a, CUSTOMER_MASK_INDEX) or
-        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX) or
-        IsMaskLikeThis(a, TYPE_MASK_INDEX) or
-        IsMaskLikeThis(a, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX, DATE_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX, CUSTOMER_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX, SUPPLIER_MASK_INDEX) or
-        IsMaskLikeThis(a, REGION_MASK_INDEX, TYPE_MASK_INDEX) or
-        IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, TYPE_MASK_INDEX) or
-        IsMaskLikeThis(a, CUSTOMER_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX) or
-        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, TYPE_MASK_INDEX) or
-        IsMaskLikeThis(a, SUPPLIER_MASK_INDEX, DATE_MASK_INDEX, YEAR_MASK_INDEX)):
-      PrintAggregatedForMask(spents, a, csvWriter)
-  
-def PrintCustomers(customers, filename):
-  csvWriter = csv.DictWriter(open(filename, 'wb'),
-                             ['regNum', 'fullName', 'inn',
-                              'kpp', 'tofk'],
-                             delimiter=',',
-                             quotechar='"',
-                             quoting=csv.QUOTE_MINIMAL)
-  csvWriter.writerow({'regNum':'reg_num',
-                      'fullName':'full_name',
-                      'inn':'inn',
-                      'kpp':'kpp',
-                      'tofk':'tofk'})
+def DumpCustomers(writer, customers):
   for customer in customers.values():
-    csvWriter.writerow(customer)
+    writer.writerow(customer)
   
-def PrintSuppliers(suppliers, filename):
-  csvWriter = csv.DictWriter(open(filename, 'wb'),
-                             ['participantType', 'inn',
-                              'kpp', 'organizationForm',
-                              'organizationName', 'factualAddress'],
-                             delimiter=',',
-                             quotechar='"',
-                             quoting=csv.QUOTE_MINIMAL)
-  csvWriter.writerow({'participantType':'participant_type',
-                      'inn':'inn',
-                      'kpp':'kpp',
-                      'organizationForm':'organization_form',
-                      'organizationName':'organization_name',
-                      'factualAddress':'factual_address'})
+def DumpSuppliers(writer, suppliers):
   for supplier in suppliers.values():
     if supplier['inn']:
-      csvWriter.writerow(supplier)
+      writer.writerow(supplier)
+
+def DumpData(writers, data):
+  DumpSpents(writers['spents'], data['spents'])
+  DumpCustomers(writers['customers'], data['customers'])
+  DumpSuppliers(writers['suppliers'], data['suppliers'])
   
+def InitWriters(outputSpents, outputCustomers, outputSuppliers):
+  writers = {}
+  spentsWriter = csv.writer(open(outputSpents, 'wb'), delimiter=',',
+                         quotechar='"', quoting=csv.QUOTE_MINIMAL)
+  spentsWriter.writerow(['customer', 'supplier', 'amount', 'date', 'region', 'type', 'regNum', 'publishDate'])
+  writers['spents'] = spentsWriter
+  customersWriter = csv.DictWriter(open(outputCustomers, 'wb'),
+                                   ['regNum', 'fullName', 'inn',
+                                    'kpp', 'tofk'],
+                                   delimiter=',',
+                                   quotechar='"',
+                                   quoting=csv.QUOTE_MINIMAL)
+  customersWriter.writerow({'regNum':'reg_num',
+                           'fullName':'full_name',
+                           'inn':'inn',
+                           'kpp':'kpp',
+                           'tofk':'tofk'})
+  writers['customers'] = customersWriter
+  suppliersWriter = csv.DictWriter(open(outputSuppliers, 'wb'),
+                                   ['participantType', 'inn',
+                                    'kpp', 'organizationForm',
+                                    'organizationName', 'factualAddress'],
+                                   delimiter=',',
+                                   quotechar='"',
+                                   quoting=csv.QUOTE_MINIMAL)
+  suppliersWriter.writerow({'participantType':'participant_type',
+                           'inn':'inn',
+                           'kpp':'kpp',
+                           'organizationForm':'organization_form',
+                           'organizationName':'organization_name',
+                           'factualAddress':'factual_address'})
+  writers['suppliers'] = suppliersWriter
+  return writers
+
 def main():
   try:
     opts, args = getopt.getopt(sys.argv[1:], '',
@@ -306,12 +222,12 @@ def main():
   except getopt.GetoptError, err:
     #print help information and exit:
     print str(err)#  will print something like "option -a not recognized"
-    print 'usage: arch -i386 /usr/bin/python data_importer.py --directory="../../Moskovskaja_obl" --tmpdir="../data" --outputSpents="expenses.csv" --outputCustomers="customer.csv" --outputSuppliers="supplier.csv"'
+    print 'usage: arch -i386 /usr/bin/python data_importer.py --directory="../../Moskovskaja_obl" --tmpdir="../data" --outputSpents="expenses_temp.csv" --outputCustomers="customer.csv" --outputSuppliers="supplier.csv"'
     sys.exit(2)
   for name, value in opts:
     if name == '--directory':
       directory = value
-    if name == '--tmpdir':
+    elif name == '--tmpdir':
       tmpdir = value
     elif name == '--outputSpents':
       outputSpents = value 
@@ -320,12 +236,13 @@ def main():
     elif name == '--outputCustomers':
       outputCustomers = value
   importer = XmlImporter()
-  spents = {}
-  customers = {}
-  suppliers = {}
+  writers = InitWriters(outputSpents, outputCustomers, outputSuppliers)
   for dirname, dirnames, filenames in os.walk(directory):
     for filename in filenames:
       if filename.startswith('contract'):
+        spents = {}
+        customers = {}
+        suppliers = {}
         filename = os.path.join(dirname, filename)
         assert zipfile.is_zipfile(filename), filename
         myZip = zipfile.ZipFile(filename, "r")
@@ -334,24 +251,9 @@ def main():
           inputFile = os.path.join(tmpdir, name)
           print inputFile
           parsed = importer.ParseData(open(inputFile, "r"))
-          for spent in parsed['spents']:
-            regNum = spent['regNum']
-            if (not regNum in spents or 
-                (spent['publishDate'] > spents[regNum]['publishDate'])):
-              spents[regNum] = spent
-             
-          for key, value in parsed['customers'].iteritems():
-            if not key in customers:
-              customers[key] = value
-          for key, value in parsed['suppliers'].iteritems():
-            if not key in suppliers:
-              suppliers[key] = value
           os.remove(inputFile)
+          DumpData(writers, parsed)
             
-  PrintSpents(spents, outputSpents)
-  PrintCustomers(customers, outputCustomers)
-  PrintSuppliers(suppliers, outputSuppliers)
-
 if __name__ == "__main__":
   main()
       
